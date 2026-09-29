@@ -14,7 +14,7 @@ Interactive 3D Shooting Game — joint project for **SE3032 (Graphics & Visualiz
 
 ## Status
 - [x] Repo cloned, branch created
-- [ ] AI architecture sketch (paper)
+- [x] AI architecture sketch (paper)
 - [ ] Basic player movement + one interaction (Week 2)
 - [ ] Minimal Adaptive Boss logic in test scene (Week 2)
 
