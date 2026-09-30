@@ -1,0 +1,56 @@
+# Line endings: text files are stored as LF in the repo and checked out
+# as LF on every OS, so Windows and macOS never fight over CRLF vs LF.
+* text=auto eol=lf
+
+# Windows-only scripts need CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Unity text assets (needs Asset Serialization = Force Text)
+*.cs          text eol=lf diff=csharp
+*.meta        text eol=lf
+*.unity       text eol=lf
+*.prefab      text eol=lf
+*.asset       text eol=lf
+*.mat         text eol=lf
+*.anim        text eol=lf
+*.controller  text eol=lf
+*.asmdef      text eol=lf
+*.shader      text eol=lf
+*.json        text eol=lf
+*.md          text eol=lf
+
+# Images
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.tga   binary
+*.tif   binary
+*.tiff  binary
+*.psd   binary
+*.exr   binary
+*.hdr   binary
+
+# 3D models
+*.fbx    binary
+*.blend  binary
+*.mb     binary
+*.max    binary
+
+# Audio / video
+*.wav  binary
+*.mp3  binary
+*.ogg  binary
+*.mp4  binary
+*.mov  binary
+
+# Fonts, plugins, packages, documents
+*.ttf          binary
+*.otf          binary
+*.dll          binary
+*.so           binary
+*.dylib        binary
+*.unitypackage binary
+*.zip          binary
+*.pdf          binary
