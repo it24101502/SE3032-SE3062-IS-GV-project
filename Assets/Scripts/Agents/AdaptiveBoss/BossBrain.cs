@@ -3,18 +3,17 @@ using UnityEngine;
 public enum BossAction { Attack, Retreat, Flank, TakeCover }
 
 // Pure logic: no GameObjects, exactly as in the design document.
-public class BossBrain
-{
+public class BossBrain{
     public float minCommitTime = 1.0f;
     public float switchMargin = 0.15f;
+    bool hasChosen = false;
 
     public float[] LastScores = new float[4];   // for the debug overlay
     public BossAction Current = BossAction.Attack;
     float timeInCurrent = 0f;
 
     public BossAction Evaluate(bool playerHasRanged, float playerHealth,
-                               float bossHealth, float distance, float deltaTime)
-    {
+                               float bossHealth, float distance, float deltaTime){
         // Considerations
         float closeness = 1f - Mathf.Clamp01(distance / 20f);
         float mediumBand = 1f - Mathf.Clamp01(Mathf.Abs(distance - 10f) / 10f);
@@ -38,10 +37,15 @@ public class BossBrain
         timeInCurrent += deltaTime;
         bool heldLongEnough = timeInCurrent >= minCommitTime;
         bool clearlyBetter = LastScores[best] > LastScores[(int)Current] + switchMargin;
-        if (best != (int)Current && heldLongEnough && clearlyBetter)
-        {
+        if (best != (int)Current && heldLongEnough && clearlyBetter){
             Current = (BossAction)best;
             timeInCurrent = 0f;
+        }
+        if (!hasChosen){
+            Current = (BossAction)best;
+            hasChosen = true;
+            timeInCurrent = 0f;
+            return Current;
         }
         return Current;
     }
