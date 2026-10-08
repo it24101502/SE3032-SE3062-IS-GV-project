@@ -1,11 +1,12 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 public class BossController : MonoBehaviour{
-    [Header("Test inputs: change these while the game is running")]
+    [Header("References")]
     public Transform player;
-    public bool playerHasRanged = true;
-    [Range(0f, 1f)] public float playerHealth = 0.8f;
-    [Range(0f, 1f)] public float bossHealth = 0.3f;
+    public PlayerStats playerStats;
+    public BossHealth bossHealthComp;
+    public Transform[] coverPoints;
 
     [Header("Movement")]
     public float moveSpeed = 3f;
@@ -16,9 +17,13 @@ public class BossController : MonoBehaviour{
 
     BossBrain brain = new BossBrain();
     Renderer rend;
+    NavMeshAgent agent;
 
     void Start(){
         rend = GetComponent<Renderer>();
+        agent = GetComponent<NavMeshAgent>();
+        agent.speed = moveSpeed;
+        agent.stoppingDistance = 1.5f;
     }
 
     void Update(){
@@ -27,28 +32,55 @@ public class BossController : MonoBehaviour{
         float distance = toPlayer.magnitude;
         Vector3 dir = toPlayer.normalized;
 
-        BossAction action = brain.Evaluate(playerHasRanged, playerHealth,
-                                           bossHealth, distance, Time.deltaTime);
+        BossAction action = brain.Evaluate(playerStats.weapon == WeaponType.Ranged,
+                                           playerStats.HealthFraction,
+                                           bossHealthComp.Fraction,
+                                           distance, Time.deltaTime);
 
         switch (action){
             case BossAction.Attack:
-                transform.position += dir * moveSpeed * Time.deltaTime;
+                GoTo(player.position);
                 rend.material.color = Color.red;
+                if (distance < 2f) playerStats.health -= 10f * Time.deltaTime;
                 break;
             case BossAction.Retreat:
-                transform.position -= dir * moveSpeed * Time.deltaTime;
+                GoTo(transform.position - dir * 6f);
                 rend.material.color = Color.yellow;
                 break;
             case BossAction.Flank:
-                Vector3 sideways = Vector3.Cross(Vector3.up, dir);   // circle around the player
-                transform.position += sideways * moveSpeed * Time.deltaTime;
+                Vector3 sideways = Vector3.Cross(Vector3.up, dir);
+                GoTo(player.position + sideways * 8f);
                 rend.material.color = Color.magenta;
                 break;
             case BossAction.TakeCover:
-                // Placeholder: stand still. Real cover points come later.
+                GoTo(NearestCover());
                 rend.material.color = Color.blue;
                 break;
         }
+    }
+
+    // Send the agent to the closest valid point on the NavMesh
+    void GoTo(Vector3 target){
+        if (NavMesh.SamplePosition(target, out NavMeshHit hit, 3f, NavMesh.AllAreas))
+            agent.SetDestination(hit.position);
+    }
+
+    Vector3 NearestCover(){
+        Vector3 best = transform.position;
+        float bestDist = float.MaxValue;
+        foreach (Transform c in coverPoints){
+            float d = Vector3.Distance(transform.position, c.position);
+            if (d < bestDist){ bestDist = d; best = c.position; }
+        }
+        return best;
+    }
+
+    // Shows cover points as green spheres in the Scene view
+    void OnDrawGizmos(){
+        if (coverPoints == null) return;
+        Gizmos.color = Color.green;
+        foreach (Transform c in coverPoints)
+            if (c != null) Gizmos.DrawWireSphere(c.position, 0.7f);
     }
 
     // Debug overlay: shows all four live scores
@@ -65,7 +97,6 @@ public class BossController : MonoBehaviour{
         float boxW = overlayFontSize * 12f;
         float boxH = lineH * 5f + 20f;
 
-        // Dark semi-transparent background so the text is readable on any scene
         GUI.color = new Color(0f, 0f, 0f, 0.7f);
         GUI.DrawTexture(new Rect(10, 10, boxW, boxH), Texture2D.whiteTexture);
         GUI.color = Color.white;

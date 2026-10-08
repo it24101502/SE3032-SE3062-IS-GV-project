@@ -132,6 +132,7 @@ GameObject:
   - component: {fileID: 284857805}
   - component: {fileID: 284857804}
   - component: {fileID: 284857808}
+  - component: {fileID: 284857809}
   m_Layer: 0
   m_Name: Boss
   m_TagString: Untagged
@@ -247,11 +248,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BossController
   player: {fileID: 302935700}
+  playerStats: {fileID: 302935703}
+  bossHealthComp: {fileID: 284857809}
   playerHasRanged: 1
   playerHealth: 0.8
   bossHealth: 0.3
   moveSpeed: 3
   overlayFontSize: 24
+--- !u!114 &284857809
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 284857803}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f67b81184fb23d478c9dbcfcc627006, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BossHealth
+  maxHealth: 100
+  health: 100
 --- !u!1 &302935696
 GameObject:
   m_ObjectHideFlags: 0
@@ -265,6 +282,7 @@ GameObject:
   - component: {fileID: 302935698}
   - component: {fileID: 302935702}
   - component: {fileID: 302935701}
+  - component: {fileID: 302935703}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -386,6 +404,21 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &302935703
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 302935696}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f52795fcf1877f64aacb1e8a04ccaa66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
+  maxHealth: 100
+  health: 100
+  weapon: 1
 --- !u!1 &1194953143
 GameObject:
   m_ObjectHideFlags: 0
