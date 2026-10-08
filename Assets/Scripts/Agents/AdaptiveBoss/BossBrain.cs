@@ -33,6 +33,14 @@ public class BossBrain{
         for (int i = 1; i < 4; i++)
             if (LastScores[i] > LastScores[best]) best = i;
 
+        // First call: just take the best action straight away
+        if (!hasChosen){
+            Current = (BossAction)best;
+            hasChosen = true;
+            timeInCurrent = 0f;
+            return Current;
+        }
+
         // Anti-flicker rule (section 6)
         timeInCurrent += deltaTime;
         bool heldLongEnough = timeInCurrent >= minCommitTime;
@@ -40,12 +48,6 @@ public class BossBrain{
         if (best != (int)Current && heldLongEnough && clearlyBetter){
             Current = (BossAction)best;
             timeInCurrent = 0f;
-        }
-        if (!hasChosen){
-            Current = (BossAction)best;
-            hasChosen = true;
-            timeInCurrent = 0f;
-            return Current;
         }
         return Current;
     }
