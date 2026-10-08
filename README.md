@@ -15,8 +15,8 @@ Interactive 3D Shooting Game — joint project for **SE3032 (Graphics & Visualiz
 ## Status
 - [x] Repo cloned, branch created
 - [x] AI architecture sketch (paper)
-- [ ] Basic player movement + one interaction (Week 2)
-- [ ] Minimal Adaptive Boss logic in test scene (Week 2)
+- [X] Basic player movement + one interaction (Week 2)
+- [X] Minimal Adaptive Boss logic in test scene (Week 2)
 
 ## Deadlines
 - IS: agent code + report + viva — **17 Oct 2026**
