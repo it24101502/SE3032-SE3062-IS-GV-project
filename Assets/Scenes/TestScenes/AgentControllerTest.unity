@@ -375,8 +375,13 @@ MonoBehaviour:
   - {fileID: 1291638230}
   - {fileID: 357298820}
   - {fileID: 1386231097}
+  - {fileID: 1729008138}
   moveSpeed: 2
   turnSpeed: 180
+  arrivalDistance: 0.05
+  isAlive: 0
+  movementEnabled: 1
+  loopPath: 0
 --- !u!1 &860165294
 GameObject:
   m_ObjectHideFlags: 0
