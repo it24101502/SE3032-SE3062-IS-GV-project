@@ -69,4 +69,32 @@ public class AgentMovement : MonoBehaviour
             moveSpeed * Time.deltaTime
         );
     }
+
+    public void SetPath(Transform[] newPath)
+    {
+        if (newPath == null || newPath.Length == 0)
+        {
+            pathPoints = new Transform[0];
+            currentPoint = 0;
+            return;
+        }
+
+        foreach (Transform point in newPath)
+        {
+            if (point == null)
+            {
+                Debug.LogWarning("Path contains a missing waypoint.", this);
+                return;
+            }
+        }
+
+        pathPoints = (Transform[])newPath.Clone();
+        currentPoint = 0;
+    }
+
+    [ContextMenu("Apply Inspector Path")]
+    private void ApplyInspectorPath()
+    {
+        SetPath(pathPoints);
+    }
 }
