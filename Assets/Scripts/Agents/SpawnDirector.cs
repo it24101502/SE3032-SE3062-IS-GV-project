@@ -99,6 +99,7 @@ public class SpawnDirector : MonoBehaviour
     public Transform[] spawnPoints;
     public Transform player;
     [Min(0f)] public float minimumPlayerDistance = 3f;
+    [Min(0.1f)] public float preferredPlayerDistance = 6f;
 
     [Min(1)] public int maxActiveEnemies = 3;
     [Min(0.1f)] public float buildUpSpawnInterval = 4f;
@@ -167,57 +168,96 @@ public class SpawnDirector : MonoBehaviour
         if (player == null)
             return;
 
-        int startIndex = Random.Range(0, spawnPoints.Length);
+        Transform bestPoint = null;
+        float bestScore = float.NegativeInfinity;
 
-        for (int offset = 0; offset < spawnPoints.Length; offset++)
+        foreach (Transform point in spawnPoints)
         {
-            int index = (startIndex + offset) % spawnPoints.Length;
-            Transform point = spawnPoints[index];
-
             if (point == null)
                 continue;
 
             Vector3 playerOffset = point.position - player.position;
             playerOffset.y = 0f;
 
-            if (playerOffset.magnitude < minimumPlayerDistance)
+            float playerDistance = playerOffset.magnitude;
+
+            if (playerDistance < minimumPlayerDistance)
                 continue;
 
             bool occupied = false;
+            float nearestEnemyDistance = float.PositiveInfinity;
 
             foreach (GameObject enemy in spawnedEnemies)
             {
-                if (Vector3.Distance(
-                    point.position,
-                    enemy.transform.position
-                ) < minimumEnemySpacing)
+                if (enemy == null)
+                    continue;
+
+                Vector3 enemyOffset =
+                    point.position - enemy.transform.position;
+                enemyOffset.y = 0f;
+
+                float distance = enemyOffset.magnitude;
+
+                if (distance < minimumEnemySpacing)
                 {
                     occupied = true;
                     break;
                 }
+
+                nearestEnemyDistance = Mathf.Min(
+                    nearestEnemyDistance,
+                    distance
+                );
             }
 
             if (occupied)
                 continue;
 
-            GameObject newEnemy = Instantiate(
-                enemyPrefab,
-                point.position,
-                point.rotation
+            float preferredDistance = Mathf.Max(
+                minimumPlayerDistance,
+                preferredPlayerDistance
             );
 
-            newEnemy.SetActive(true);
-            spawnedEnemies.Add(newEnemy);
-            activeEnemyCount = spawnedEnemies.Count;
-
-            Debug.Log(
-                $"[SpawnDirector] Spawned at {point.name}. " +
-                $"Active enemies: {activeEnemyCount}",
-                this
+            float distanceScore = 1f / (
+                1f + Mathf.Abs(playerDistance - preferredDistance)
             );
 
-            return;
+            float spacingScore = float.IsPositiveInfinity(
+                nearestEnemyDistance
+            )
+                ? 1f
+                : Mathf.Clamp01(
+                    nearestEnemyDistance /
+                    Mathf.Max(0.1f, preferredDistance)
+                );
+
+            float score = distanceScore * 0.7f + spacingScore * 0.3f;
+
+            if (score > bestScore)
+            {
+                bestScore = score;
+                bestPoint = point;
+            }
         }
+
+        if (bestPoint == null)
+            return;
+
+        GameObject newEnemy = Instantiate(
+            enemyPrefab,
+            bestPoint.position,
+            bestPoint.rotation
+        );
+
+        newEnemy.SetActive(true);
+        spawnedEnemies.Add(newEnemy);
+        activeEnemyCount = spawnedEnemies.Count;
+
+        Debug.Log(
+            $"[SpawnDirector] Selected {bestPoint.name}, " +
+            $"Score: {bestScore:F2}, Active: {activeEnemyCount}",
+            this
+        );
     }
 
     private float CalculateStress()
