@@ -14,7 +14,37 @@ public class AgentMovement : MonoBehaviour
 
     private int currentPoint = 0;
 
+    [SerializeField] private Animator agentAnimator;
+
+    private static readonly int SpeedParameter =
+        Animator.StringToHash("Speed");
+
+    private void Awake()
+    {
+        if (agentAnimator == null)
+            agentAnimator = GetComponentInChildren<Animator>();
+    }
+
     private void Update()
+    {
+        Vector3 previousPosition = transform.position;
+
+        MoveAlongPath();
+
+        float actualSpeed = 0f;
+
+        if (Time.deltaTime > 0f)
+        {
+            actualSpeed = Vector3.Distance(
+                previousPosition,
+                transform.position
+            ) / Time.deltaTime;
+        }
+
+        if (agentAnimator != null)
+            agentAnimator.SetFloat(SpeedParameter, actualSpeed);
+    }
+    private void MoveAlongPath()
     {
         if (!isAlive || !movementEnabled)
             return;
