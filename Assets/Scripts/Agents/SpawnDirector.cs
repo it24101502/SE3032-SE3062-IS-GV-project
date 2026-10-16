@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class SpawnDirector : MonoBehaviour
@@ -45,7 +46,7 @@ public class SpawnDirector : MonoBehaviour
         smoothedStress = targetStress;
     }
 
-    private void Update()
+    private void EvaluateDirector()
     {
         if (!gameplayActive || !playerAlive)
             return;
@@ -90,6 +91,121 @@ public class SpawnDirector : MonoBehaviour
                     ChangePhase(DirectorPhase.BuildUp);
                 }
                 break;
+        }
+    }
+
+    [Header("Spawning")]
+    public GameObject enemyPrefab;
+    public Transform[] spawnPoints;
+
+    [Min(1)] public int maxActiveEnemies = 3;
+    [Min(0.1f)] public float buildUpSpawnInterval = 4f;
+    [Min(0.1f)] public float peakSpawnInterval = 2f;
+    [Min(0.1f)] public float minimumEnemySpacing = 1.5f;
+
+    [Header("Spawn Runtime Status")]
+    [SerializeField] private int activeEnemyCount;
+    [SerializeField] private float spawnTimer;
+    [SerializeField] private float currentSpawnInterval;
+
+    private readonly List<GameObject> spawnedEnemies =
+        new List<GameObject>();
+
+    private void Update()
+    {
+        spawnedEnemies.RemoveAll(
+            enemy => enemy == null || !enemy.activeInHierarchy
+        );
+
+        activeEnemyCount = spawnedEnemies.Count;
+
+        if (!gameplayActive || !playerAlive)
+        {
+            spawnTimer = 0f;
+            return;
+        }
+
+        EvaluateDirector();
+
+        float baseInterval = currentPhase == DirectorPhase.Peak
+            ? peakSpawnInterval
+            : buildUpSpawnInterval;
+
+        currentSpawnInterval = Mathf.Max(
+            0.1f,
+            baseInterval * (1f + smoothedStress)
+        );
+
+        if (currentPhase == DirectorPhase.Relax ||
+            activeEnemyCount >= maxActiveEnemies)
+        {
+            spawnTimer = 0f;
+            return;
+        }
+
+        if (enemyPrefab == null ||
+            spawnPoints == null ||
+            spawnPoints.Length == 0)
+        {
+            spawnTimer = 0f;
+            return;
+        }
+
+        spawnTimer += Time.deltaTime;
+
+        if (spawnTimer < currentSpawnInterval)
+            return;
+
+        spawnTimer = 0f;
+        TrySpawnEnemy();
+    }
+
+    private void TrySpawnEnemy()
+    {
+        int startIndex = Random.Range(0, spawnPoints.Length);
+
+        for (int offset = 0; offset < spawnPoints.Length; offset++)
+        {
+            int index = (startIndex + offset) % spawnPoints.Length;
+            Transform point = spawnPoints[index];
+
+            if (point == null)
+                continue;
+
+            bool occupied = false;
+
+            foreach (GameObject enemy in spawnedEnemies)
+            {
+                if (Vector3.Distance(
+                    point.position,
+                    enemy.transform.position
+                ) < minimumEnemySpacing)
+                {
+                    occupied = true;
+                    break;
+                }
+            }
+
+            if (occupied)
+                continue;
+
+            GameObject newEnemy = Instantiate(
+                enemyPrefab,
+                point.position,
+                point.rotation
+            );
+
+            newEnemy.SetActive(true);
+            spawnedEnemies.Add(newEnemy);
+            activeEnemyCount = spawnedEnemies.Count;
+
+            Debug.Log(
+                $"[SpawnDirector] Spawned at {point.name}. " +
+                $"Active enemies: {activeEnemyCount}",
+                this
+            );
+
+            return;
         }
     }
 
