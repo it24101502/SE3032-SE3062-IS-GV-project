@@ -97,6 +97,8 @@ public class SpawnDirector : MonoBehaviour
     [Header("Spawning")]
     public GameObject enemyPrefab;
     public Transform[] spawnPoints;
+    public Transform player;
+    [Min(0f)] public float minimumPlayerDistance = 3f;
 
     [Min(1)] public int maxActiveEnemies = 3;
     [Min(0.1f)] public float buildUpSpawnInterval = 4f;
@@ -162,6 +164,9 @@ public class SpawnDirector : MonoBehaviour
 
     private void TrySpawnEnemy()
     {
+        if (player == null)
+            return;
+
         int startIndex = Random.Range(0, spawnPoints.Length);
 
         for (int offset = 0; offset < spawnPoints.Length; offset++)
@@ -170,6 +175,12 @@ public class SpawnDirector : MonoBehaviour
             Transform point = spawnPoints[index];
 
             if (point == null)
+                continue;
+
+            Vector3 playerOffset = point.position - player.position;
+            playerOffset.y = 0f;
+
+            if (playerOffset.magnitude < minimumPlayerDistance)
                 continue;
 
             bool occupied = false;
