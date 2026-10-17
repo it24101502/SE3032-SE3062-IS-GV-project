@@ -1,8 +1,8 @@
-OUTPOST 04 - ABANDONED MILITARY BUNKER (NO TEXT VERSION)
+OUTPOST 04 - EXPANDED BUNKER / EIGHT ROOMS / NO TEXT
 Simple university-level Unity environment project
 
 OPEN WITH YOUR EXISTING UNITY HUB
-1. Extract AbandonedBunker-UnityProject.zip first.
+1. Extract AbandonedBunker-Expanded-8Rooms.zip first.
 2. In Unity Hub, choose Add / Add project from disk.
 3. Select the AbandonedBunker folder containing Assets, Packages and ProjectSettings.
 4. Open it with Unity 6000.6.4f1 (Unity 6.6), the version found on your device.
@@ -47,12 +47,13 @@ BunkerWalker.cs - movement, camera, flashlight and door input
 BunkerDoor.cs   - smooth door rotation around its hinge
 BunkerLight.cs  - occasional gentle light dimming
 
-OPTIONAL REBUILD TOOL
-The Bunker menu contains 'Rebuild scene (replaces current scene)'.
-This is optional. The finished scene is already included.
-It reconstructs the environment from primitives and saves it over the original
-bunker scene, so save your own work in a separate scene before using it.
-The scene and rebuild tool contain no wall labels, supply labels, or on-screen text.
+EXPANDED LAYOUT
+Eight rooms: barracks, storage, control room, generator room, mess room,
+infirmary, workshop, and briefing room. A new cross corridor and short northern
+passage connect the wings. Footprint: approximately 36 x 42 metres.
+The layout is inspired by the supplied reference, rather than an exact copy.
+Use Bunker > Open expanded bunker scene to open the finished scene.
+There is no scene-rebuild action that can revert this version to the old layout.
 
 RENDERING AND IMPORT
 This project uses Unity's Built-in Render Pipeline with Standard materials.
@@ -73,7 +74,7 @@ sandbox. This does not mean Unity Hub is missing from your device.
 This is an environment walkthrough, without enemies, combat, missions or audio.
 
 UPDATING AN EXISTING PROJECT
-Import AbandonedBunker-NoText.unitypackage to replace the original bunker assets.
+Import AbandonedBunker-Expanded-8Rooms.unitypackage to replace the original bunker assets.
 If your scene has local edits, use Bunker > Remove text from current scene after
 import, then save the scene. This removes the old scene labels while retaining
 your room and prop edits. The action supports Undo.
