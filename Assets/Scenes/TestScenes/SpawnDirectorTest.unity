@@ -169,6 +169,8 @@ MonoBehaviour:
   ammo01: 1
   nearbyEnemies: 0
   enemyCountForMaxStress: 5
+  automaticEnemyCount: 1
+  nearbyEnemyRadius: 10
   smoothingSpeed: 2
   highStressThreshold: 0.75
   recoveryThreshold: 0.35

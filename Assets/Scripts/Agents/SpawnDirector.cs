@@ -20,6 +20,10 @@ public class SpawnDirector : MonoBehaviour
     [Min(0)] public int nearbyEnemies = 0;
     [Min(1)] public int enemyCountForMaxStress = 5;
 
+    [Header("Enemy Detection")]
+    public bool automaticEnemyCount = true;
+    [Min(0.1f)] public float nearbyEnemyRadius = 10f;
+
     [Header("Stress Settings")]
     [Min(0.01f)] public float smoothingSpeed = 2f;
     [Range(0f, 1f)] public float highStressThreshold = 0.75f;
@@ -124,6 +128,27 @@ public class SpawnDirector : MonoBehaviour
         );
 
         activeEnemyCount = spawnedEnemies.Count;
+
+        if (automaticEnemyCount)
+        {
+            nearbyEnemies = 0;
+
+            if (player != null)
+            {
+                foreach (GameObject enemy in spawnedEnemies)
+                {
+                    Vector3 offset =
+                        enemy.transform.position - player.position;
+                    offset.y = 0f;
+
+                    if (offset.sqrMagnitude <=
+                        nearbyEnemyRadius * nearbyEnemyRadius)
+                    {
+                        nearbyEnemies++;
+                    }
+                }
+            }
+        }
 
         if (!gameplayActive || !playerAlive)
         {
@@ -333,6 +358,13 @@ public class SpawnDirector : MonoBehaviour
         return true;
     }
 
+    public void UpdatePlayerState(float normalizedHealth,float normalizedAmmo,bool alive,bool active)
+    {
+        health01 = Mathf.Clamp01(normalizedHealth);
+        ammo01 = Mathf.Clamp01(normalizedAmmo);
+        playerAlive = alive;
+        gameplayActive = active;
+    }
     private float CalculateStress()
     {
         float healthStress = 1f - Mathf.Clamp01(health01);
