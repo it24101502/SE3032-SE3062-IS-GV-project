@@ -163,6 +163,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 714404bcc42eb984a94c1d06c2a052ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpawnDirector
+  enemyTypes:
+  - typeName: Light
+    prefab: {fileID: 422923216}
+    preferredPressure: 0.3
+    peakOnly: 0
+  - typeName: Heavy
+    prefab: {fileID: 422923216}
+    preferredPressure: 0.8
+    peakOnly: 1
+  targetPressure: 0
+  selectedEnemyType: 
   gameplayActive: 1
   playerAlive: 1
   health01: 1
@@ -429,6 +440,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &422923216 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7806458483692640954, guid: b120f4b187e8ac247bc71ce947544e83, type: 3}
+  m_PrefabInstance: {fileID: 2667136234669575596}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &785433858
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,6 +4,20 @@ using UnityEngine.AI;
 
 public class SpawnDirector : MonoBehaviour
 {
+    [System.Serializable]
+    public class EnemyTypeOption
+    {
+        public string typeName = "Light";
+        public GameObject prefab;
+        [Range(0f, 1f)] public float preferredPressure = 0.3f;
+        public bool peakOnly;
+    }
+
+    [Header("Enemy Type Selection")]
+    public EnemyTypeOption[] enemyTypes;
+
+    [SerializeField] private float targetPressure;
+    [SerializeField] private string selectedEnemyType;
     public enum DirectorPhase
     {
         BuildUp,
@@ -199,6 +213,11 @@ public class SpawnDirector : MonoBehaviour
         if (rejectVisiblePoints && playerCamera == null)
             return;
 
+        GameObject chosenPrefab = SelectEnemyPrefab();
+
+        if (chosenPrefab == null)
+            return;
+
         Transform bestPoint = null;
         float bestScore = float.NegativeInfinity;
 
@@ -280,12 +299,13 @@ public class SpawnDirector : MonoBehaviour
             return;
 
         GameObject newEnemy = Instantiate(
-            enemyPrefab,
+            chosenPrefab,
             bestPoint.position,
             bestPoint.rotation
         );
 
         newEnemy.SetActive(true);
+        newEnemy.name = selectedEnemyType + "(Clone)";
         spawnedEnemies.Add(newEnemy);
         activeEnemyCount = spawnedEnemies.Count;
 
@@ -364,6 +384,47 @@ public class SpawnDirector : MonoBehaviour
         ammo01 = Mathf.Clamp01(normalizedAmmo);
         playerAlive = alive;
         gameplayActive = active;
+    }
+
+    private GameObject SelectEnemyPrefab()
+    {
+        float phasePressure =
+            currentPhase == DirectorPhase.Peak ? 0.8f : 0.35f;
+
+        targetPressure = phasePressure * (1f - smoothedStress);
+        selectedEnemyType = "";
+
+        if (enemyTypes == null || enemyTypes.Length == 0)
+        {
+            selectedEnemyType = "Default";
+            return enemyPrefab;
+        }
+
+        GameObject bestPrefab = null;
+        float bestScore = float.NegativeInfinity;
+
+        foreach (EnemyTypeOption option in enemyTypes)
+        {
+            if (option == null || option.prefab == null)
+                continue;
+
+            if (option.peakOnly &&
+                currentPhase != DirectorPhase.Peak)
+                continue;
+
+            float score = 1f - Mathf.Abs(
+                targetPressure - option.preferredPressure
+            );
+
+            if (score > bestScore)
+            {
+                bestScore = score;
+                bestPrefab = option.prefab;
+                selectedEnemyType = option.typeName;
+            }
+        }
+
+        return bestPrefab;
     }
     private float CalculateStress()
     {
