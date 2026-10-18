@@ -98,6 +98,8 @@ public class SpawnDirector : MonoBehaviour
     public GameObject enemyPrefab;
     public Transform[] spawnPoints;
     public Transform player;
+    public Camera playerCamera;
+    public bool rejectVisiblePoints = true;
     [Min(0f)] public float minimumPlayerDistance = 3f;
     [Min(0.1f)] public float preferredPlayerDistance = 6f;
 
@@ -168,6 +170,9 @@ public class SpawnDirector : MonoBehaviour
         if (player == null)
             return;
 
+        if (rejectVisiblePoints && playerCamera == null)
+            return;
+
         Transform bestPoint = null;
         float bestScore = float.NegativeInfinity;
 
@@ -182,6 +187,9 @@ public class SpawnDirector : MonoBehaviour
             float playerDistance = playerOffset.magnitude;
 
             if (playerDistance < minimumPlayerDistance)
+                continue;
+
+            if (rejectVisiblePoints && IsPointInCameraView(point.position))
                 continue;
 
             bool occupied = false;
@@ -258,6 +266,16 @@ public class SpawnDirector : MonoBehaviour
             $"Score: {bestScore:F2}, Active: {activeEnemyCount}",
             this
         );
+    }
+
+    private bool IsPointInCameraView(Vector3 position)
+    {
+        Vector3 viewport = playerCamera.WorldToViewportPoint(position);
+
+        return viewport.z >= playerCamera.nearClipPlane &&
+               viewport.z <= playerCamera.farClipPlane &&
+               viewport.x >= 0f && viewport.x <= 1f &&
+               viewport.y >= 0f && viewport.y <= 1f;
     }
 
     private float CalculateStress()
