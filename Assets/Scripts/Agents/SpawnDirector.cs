@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class SpawnDirector : MonoBehaviour
 {
@@ -191,6 +192,8 @@ public class SpawnDirector : MonoBehaviour
 
             if (rejectVisiblePoints && IsPointInCameraView(point.position))
                 continue;
+            if (!TryGetPathDistance(point.position, out float pathDistance))
+                continue;
 
             bool occupied = false;
             float nearestEnemyDistance = float.PositiveInfinity;
@@ -227,7 +230,7 @@ public class SpawnDirector : MonoBehaviour
             );
 
             float distanceScore = 1f / (
-                1f + Mathf.Abs(playerDistance - preferredDistance)
+                 1f + Mathf.Abs(pathDistance - preferredDistance)
             );
 
             float spacingScore = float.IsPositiveInfinity(
@@ -276,6 +279,58 @@ public class SpawnDirector : MonoBehaviour
                viewport.z <= playerCamera.farClipPlane &&
                viewport.x >= 0f && viewport.x <= 1f &&
                viewport.y >= 0f && viewport.y <= 1f;
+    }
+
+    private bool TryGetGroundPoint(Vector3 position, out Vector3 result)
+    {
+        result = Vector3.zero;
+
+        if (!NavMesh.SamplePosition(
+            position, out NavMeshHit hit, 2f, NavMesh.AllAreas))
+        {
+            return false;
+        }
+
+        Vector3 offset = hit.position - position;
+        offset.y = 0f;
+
+        if (offset.magnitude > 0.5f)
+            return false;
+
+        result = hit.position;
+        return true;
+    }
+
+    private bool TryGetPathDistance(Vector3 spawnPosition, out float distance)
+    {
+        distance = 0f;
+
+        if (player == null)
+            return false;
+
+        if (!TryGetGroundPoint(spawnPosition, out Vector3 start))
+            return false;
+
+        if (!TryGetGroundPoint(player.position, out Vector3 destination))
+            return false;
+
+        NavMeshPath path = new NavMeshPath();
+
+        if (!NavMesh.CalculatePath(
+            start, destination, NavMesh.AllAreas, path))
+        {
+            return false;
+        }
+
+        if (path.status != NavMeshPathStatus.PathComplete)
+            return false;
+
+        Vector3[] corners = path.corners;
+
+        for (int i = 1; i < corners.Length; i++)
+            distance += Vector3.Distance(corners[i - 1], corners[i]);
+
+        return true;
     }
 
     private float CalculateStress()
