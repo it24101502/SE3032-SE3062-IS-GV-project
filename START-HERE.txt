@@ -1,0 +1,80 @@
+OUTPOST 04 - EXPANDED BUNKER / EIGHT ROOMS / NO TEXT
+Simple university-level Unity environment project
+
+OPEN WITH YOUR EXISTING UNITY HUB
+1. Extract AbandonedBunker-Expanded-8Rooms.zip first.
+2. In Unity Hub, choose Add / Add project from disk.
+3. Select the AbandonedBunker folder containing Assets, Packages and ProjectSettings.
+4. Open it with Unity 6000.6.4f1 (Unity 6.6), the version found on your device.
+5. In the Editor's Project panel, open:
+   Assets > Bunker > Scenes > AbandonedBunker
+   Then press Play and click inside the Game view.
+
+You do not need to create a new project or install any paid assets.
+Unity Hub launches the project; the scene runs in the Unity Editor.
+Keep the whole project folder together: the .unity scene uses the included
+materials, textures, and scripts.
+
+CONTROLS
+WASD        Walk
+Mouse       Look around
+F           Toggle flashlight
+E           Open / close the storage door when looking at it from nearby
+Escape      Release the cursor
+Left click  Capture the cursor again
+
+INCLUDED
+- Concrete entrance and main corridor
+- Barracks with two bunk beds, lockers, a table and bench
+- Supply room with crates, barrels and shelving
+- Control room with map table, radio, notice board and electrical cabinet
+- Sealed entrance door, rusty pipes, cracks, damp patches and scattered debris
+- Simple real-time lighting, mild light dimming, and a first-person controller
+- 12 materials with small, locally generated textures
+- Four reusable prefabs: crate, barrel, locker and bunk bed
+- One editable .unity scene; no paid or downloaded art assets
+
+EDITING
+The scene uses ordinary Unity primitive meshes, grouped in the Hierarchy.
+Choose an object and use the Move / Rotate / Scale tools to change it.
+Temporarily hide '02 - Ceilings (hide for top view)' to inspect the rooms from above.
+Restore the ceilings before playing.
+Props in this supplied scene are ordinary editable objects. Copies of the four
+main prop designs are also saved in Assets/Bunker/Prefabs for reuse.
+
+Only three small runtime scripts are used:
+BunkerWalker.cs - movement, camera, flashlight and door input
+BunkerDoor.cs   - smooth door rotation around its hinge
+BunkerLight.cs  - occasional gentle light dimming
+
+EXPANDED LAYOUT
+Eight rooms: barracks, storage, control room, generator room, mess room,
+infirmary, workshop, and briefing room. A new cross corridor and short northern
+passage connect the wings. Footprint: approximately 36 x 42 metres.
+The layout is inspired by the supplied reference, rather than an exact copy.
+Use Bunker > Open expanded bunker scene to open the finished scene.
+There is no scene-rebuild action that can revert this version to the old layout.
+
+RENDERING AND IMPORT
+This project uses Unity's Built-in Render Pipeline with Standard materials.
+Open the supplied project directly for the intended settings.
+The separate .unitypackage is an alternative for importing the assets into an
+existing Built-in 3D project. In that case, use the legacy Input Manager or Both
+under Player Settings > Active Input Handling. The .unitypackage does not replace
+your existing project's settings. It is not prepared for URP or HDRP.
+
+VALIDATION
+The C# files compile against the installed Unity 6000.6.4f1 assemblies.
+Scene and prefab syntax, asset references, component references, room passage
+clearances, and the storage door opening clearance passed offline checks.
+Unity Editor import and Play mode could not be verified here: the automated
+Editor process could not connect to Unity's licensing service from this chat's
+sandbox. This does not mean Unity Hub is missing from your device.
+
+This is an environment walkthrough, without enemies, combat, missions or audio.
+
+UPDATING AN EXISTING PROJECT
+Import AbandonedBunker-Expanded-8Rooms.unitypackage to replace the original bunker assets.
+If your scene has local edits, use Bunker > Remove text from current scene after
+import, then save the scene. This removes the old scene labels while retaining
+your room and prop edits. The action supports Undo.
