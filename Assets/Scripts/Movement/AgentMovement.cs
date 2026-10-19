@@ -12,12 +12,18 @@ public class AgentMovement : MonoBehaviour
     public bool movementEnabled = true;
     public bool loopPath = false;
 
-    private int currentPoint = 0;
-
     [SerializeField] private Animator agentAnimator;
+
+    private int currentPoint;
+    private Vector3[] positionPath = new Vector3[0];
+    private bool usePositionPath;
 
     private static readonly int SpeedParameter =
         Animator.StringToHash("Speed");
+
+    private int PathLength => usePositionPath
+        ? positionPath.Length
+        : (pathPoints == null ? 0 : pathPoints.Length);
 
     private void Awake()
     {
@@ -31,41 +37,51 @@ public class AgentMovement : MonoBehaviour
 
         MoveAlongPath();
 
-        float actualSpeed = 0f;
-
-        if (Time.deltaTime > 0f)
-        {
-            actualSpeed = Vector3.Distance(
-                previousPosition,
-                transform.position
-            ) / Time.deltaTime;
-        }
+        float actualSpeed = Time.deltaTime > 0f
+            ? Vector3.Distance(previousPosition, transform.position)
+                / Time.deltaTime
+            : 0f;
 
         if (agentAnimator != null)
             agentAnimator.SetFloat(SpeedParameter, actualSpeed);
     }
+
+    private bool TryGetTarget(out Vector3 targetPosition)
+    {
+        targetPosition = Vector3.zero;
+
+        if (currentPoint < 0 || currentPoint >= PathLength)
+            return false;
+
+        if (usePositionPath)
+        {
+            targetPosition = positionPath[currentPoint];
+            return true;
+        }
+
+        Transform target = pathPoints[currentPoint];
+
+        if (target == null)
+            return false;
+
+        targetPosition = target.position;
+        return true;
+    }
+
     private void MoveAlongPath()
     {
         if (!isAlive || !movementEnabled)
             return;
 
-        if (pathPoints == null || pathPoints.Length == 0)
+        if (!TryGetTarget(out Vector3 targetPosition))
             return;
 
-        if (currentPoint >= pathPoints.Length)
-            return;
-
-        Transform target = pathPoints[currentPoint];
-
-        if (target == null)
-            return;
-
-        if (Vector3.Distance(transform.position, target.position)
+        if (Vector3.Distance(transform.position, targetPosition)
             <= arrivalDistance)
         {
             currentPoint++;
 
-            if (currentPoint >= pathPoints.Length)
+            if (currentPoint >= PathLength)
             {
                 if (loopPath)
                     currentPoint = 0;
@@ -73,13 +89,11 @@ public class AgentMovement : MonoBehaviour
                     return;
             }
 
-            target = pathPoints[currentPoint];
-
-            if (target == null)
+            if (!TryGetTarget(out targetPosition))
                 return;
         }
 
-        Vector3 direction = target.position - transform.position;
+        Vector3 direction = targetPosition - transform.position;
         direction.y = 0f;
 
         if (direction.sqrMagnitude > 0.001f)
@@ -95,31 +109,67 @@ public class AgentMovement : MonoBehaviour
 
         transform.position = Vector3.MoveTowards(
             transform.position,
-            target.position,
+            targetPosition,
             moveSpeed * Time.deltaTime
         );
     }
 
+    // Existing scene-waypoint input.
     public void SetPath(Transform[] newPath)
     {
-        if (newPath == null || newPath.Length == 0)
+        if (newPath != null)
         {
-            pathPoints = new Transform[0];
-            currentPoint = 0;
-            return;
-        }
-
-        foreach (Transform point in newPath)
-        {
-            if (point == null)
+            foreach (Transform point in newPath)
             {
-                Debug.LogWarning("Path contains a missing waypoint.", this);
-                return;
+                if (point == null)
+                {
+                    Debug.LogWarning(
+                        "Path contains a missing waypoint.", this
+                    );
+                    return;
+                }
             }
         }
 
-        pathPoints = (Transform[])newPath.Clone();
+        pathPoints = newPath == null
+            ? new Transform[0]
+            : (Transform[])newPath.Clone();
+
+        usePositionPath = false;
         currentPoint = 0;
+    }
+
+    // World-space positions supplied by a path producer.
+    public void SetPositionPath(Vector3[] newPath)
+    {
+        if (newPath != null)
+        {
+            foreach (Vector3 point in newPath)
+            {
+                if (!IsFinite(point.x) ||
+                    !IsFinite(point.y) ||
+                    !IsFinite(point.z))
+                {
+                    Debug.LogWarning(
+                        "Position path contains an invalid coordinate.",
+                        this
+                    );
+                    return;
+                }
+            }
+        }
+
+        positionPath = newPath == null
+            ? new Vector3[0]
+            : (Vector3[])newPath.Clone();
+
+        usePositionPath = true;
+        currentPoint = 0;
+    }
+
+    private static bool IsFinite(float value)
+    {
+        return !float.IsNaN(value) && !float.IsInfinity(value);
     }
 
     [ContextMenu("Apply Inspector Path")]
@@ -127,4 +177,32 @@ public class AgentMovement : MonoBehaviour
     {
         SetPath(pathPoints);
     }
+
+#if UNITY_EDITOR
+    [ContextMenu("Tests/Apply Position Array Test Path")]
+    private void ApplyPositionArrayTestPath()
+    {
+        if (!Application.isPlaying)
+        {
+            Debug.LogWarning("Run this test in Play mode.", this);
+            return;
+        }
+
+        Vector3 start = transform.position;
+
+        SetPositionPath(new Vector3[]
+        {
+            start,
+            start + new Vector3(-3f, 0f, 0f),
+            start + new Vector3(-3f, 0f, 3f),
+            start + new Vector3(0f, 0f, 3f),
+            start
+        });
+
+        Debug.Log(
+            "[AgentMovement] Applied world-space position array.",
+            this
+        );
+    }
+#endif
 }
