@@ -192,9 +192,7 @@ public class SpawnDirector : MonoBehaviour
             return;
         }
 
-        if (enemyPrefab == null ||
-            spawnPoints == null ||
-            spawnPoints.Length == 0)
+        if (spawnPoints == null || spawnPoints.Length == 0)
         {
             spawnTimer = 0f;
             return;
@@ -400,6 +398,19 @@ public class SpawnDirector : MonoBehaviour
             distance += Vector3.Distance(corners[i - 1], corners[i]);
 
         return true;
+    }
+
+    public void NotifyEnemyDeath(GameObject enemyRoot)
+    {
+        if (enemyRoot == null)
+            return;
+
+        // Only remove enemies owned by this director.
+        if (!spawnedEnemies.Remove(enemyRoot))
+            return;
+
+        activeEnemyCount = spawnedEnemies.Count;
+        enemyRoot.SetActive(false);
     }
 
     public void UpdatePlayerState(float normalizedHealth,float normalizedAmmo,bool alive,bool active)
