@@ -22,7 +22,7 @@ Interactive 3D Shooting Game — joint project for **SE3032 (Graphics & Visualiz
 - [ ] Minimal Trap Setter & Spawn Director logic in test scene (Week 2)
 
 ## Deadlines
-- IS: agent code + report + viva — **17 Oct 2026**
+- IS: agent code + report + viva — **21 Oct 2026**
 - GV: source code + 3-min demo video — **21 Oct 2026**
 
 ## Commit convention
