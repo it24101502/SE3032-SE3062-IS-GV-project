@@ -127,6 +127,10 @@ public class SpawnDirector : MonoBehaviour
     [Min(0.1f)] public float peakSpawnInterval = 2f;
     [Min(0.1f)] public float minimumEnemySpacing = 1.5f;
 
+    [Header("Spawn Clearance")]
+    public LayerMask spawnBlockingLayers;
+    [Min(0.01f)] public float spawnRadius = 0.5f;
+    [Min(0.02f)] public float spawnHeight = 2f;
     [Header("Spawn Runtime Status")]
     [SerializeField] private int activeEnemyCount;
     [SerializeField] private float spawnTimer;
@@ -226,6 +230,9 @@ public class SpawnDirector : MonoBehaviour
             if (point == null)
                 continue;
 
+            if (IsSpawnBlocked(point.position))
+                continue;
+
             Vector3 playerOffset = point.position - player.position;
             playerOffset.y = 0f;
 
@@ -316,6 +323,23 @@ public class SpawnDirector : MonoBehaviour
         );
     }
 
+    private bool IsSpawnBlocked(Vector3 position)
+    {
+        float radius = Mathf.Max(0.01f, spawnRadius);
+        float height = Mathf.Max(radius * 2f, spawnHeight);
+        float offset = height * 0.5f - radius;
+
+        Vector3 bottom = position - Vector3.up * offset;
+        Vector3 top = position + Vector3.up * offset;
+
+        return Physics.CheckCapsule(
+            bottom,
+            top,
+            radius,
+            spawnBlockingLayers,
+            QueryTriggerInteraction.Ignore
+        );
+    }
     private bool IsPointInCameraView(Vector3 position)
     {
         Vector3 viewport = playerCamera.WorldToViewportPoint(position);
