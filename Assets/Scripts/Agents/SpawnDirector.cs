@@ -487,4 +487,75 @@ public class SpawnDirector : MonoBehaviour
             this
         );
     }
+
+#if UNITY_EDITOR
+    [ContextMenu("Tests/Check Enemy Death Notification")]
+    private void TestEnemyDeathNotification()
+    {
+        if (!Application.isPlaying)
+        {
+            Debug.LogWarning("Run this test during Play mode.", this);
+            return;
+        }
+
+        GameObject ownedEnemy = spawnedEnemies.Find(
+            enemy => enemy != null && enemy.activeInHierarchy
+        );
+
+        if (ownedEnemy == null)
+        {
+            Debug.LogWarning("Wait for an enemy to spawn first.", this);
+            return;
+        }
+
+        int before = spawnedEnemies.Count;
+
+        NotifyEnemyDeath(null);
+        bool nullIgnored =
+            spawnedEnemies.Count == before &&
+            activeEnemyCount == before;
+
+        GameObject outsider = new GameObject("UntrackedDeathTest");
+        NotifyEnemyDeath(outsider);
+
+        bool outsiderIgnored =
+            outsider.activeSelf &&
+            spawnedEnemies.Count == before &&
+            activeEnemyCount == before;
+
+        Destroy(outsider);
+
+        NotifyEnemyDeath(ownedEnemy);
+
+        bool ownedRemoved =
+            !ownedEnemy.activeSelf &&
+            !spawnedEnemies.Contains(ownedEnemy) &&
+            spawnedEnemies.Count == before - 1 &&
+            activeEnemyCount == before - 1;
+
+        NotifyEnemyDeath(ownedEnemy);
+
+        bool duplicateIgnored =
+            spawnedEnemies.Count == before - 1 &&
+            activeEnemyCount == before - 1;
+
+        string results =
+            $"Null ignored: {nullIgnored}, " +
+            $"Untracked ignored: {outsiderIgnored}, " +
+            $"Owned removed: {ownedRemoved}, " +
+            $"Duplicate ignored: {duplicateIgnored}";
+
+        if (nullIgnored && outsiderIgnored &&
+            ownedRemoved && duplicateIgnored)
+        {
+            Debug.Log("[SpawnDirector Death Tests] PASS — " + results, this);
+        }
+        else
+        {
+            Debug.LogError(
+                "[SpawnDirector Death Tests] FAIL — " + results, this
+            );
+        }
+    }
+#endif
 }

@@ -526,9 +526,20 @@ tests or proof of integrated gameplay.
 
 
 
-`NotifyEnemyDeath()` has been added, but its connection to an actual
+## Additional Standalone Tests
 
-enemy death system has not yet been tested.
+| Test | Result |
+|---|---|
+| Null death notification | Safely ignored - Passed |
+| Untracked object notification | Object and count unchanged - Passed |
+| Owned enemy death notification | Removed from tracking and disabled - Passed |
+| Duplicate death notification | No additional count reduction - Passed |
+| Empty spawn-point list | No spawns or Console errors - Passed |
+| No available prefab | No spawns or Console errors - Passed |
+| All points below minimum distance | No spawns or Console errors - Passed |
+
+Death notification was tested using the Editor context-menu helper.
+Connection to an actual enemy combat/death script remains pending.
 
 
 
