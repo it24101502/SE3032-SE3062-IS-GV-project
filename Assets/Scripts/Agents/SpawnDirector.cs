@@ -131,6 +131,10 @@ public class SpawnDirector : MonoBehaviour
     public LayerMask spawnBlockingLayers;
     [Min(0.01f)] public float spawnRadius = 0.5f;
     [Min(0.02f)] public float spawnHeight = 2f;
+    [Header("Failed Spawn Retry")]
+    [Min(0.1f)] public float failedSpawnRetryDelay = 0.5f;
+    private float spawnRetryTimer;
+
     [Header("Spawn Runtime Status")]
     [SerializeField] private int activeEnemyCount;
     [SerializeField] private float spawnTimer;
@@ -198,13 +202,33 @@ public class SpawnDirector : MonoBehaviour
             return;
         }
 
-        spawnTimer += Time.deltaTime;
+        spawnTimer = Mathf.Min(
+            spawnTimer + Time.deltaTime,
+            currentSpawnInterval
+        );
 
         if (spawnTimer < currentSpawnInterval)
             return;
 
-        spawnTimer = 0f;
+        spawnRetryTimer = Mathf.Max(
+            0f, spawnRetryTimer - Time.deltaTime
+        );
+
+        if (spawnRetryTimer > 0f)
+            return;
+
+        int countBeforeAttempt = spawnedEnemies.Count;
         TrySpawnEnemy();
+
+        if (spawnedEnemies.Count > countBeforeAttempt)
+        {
+            spawnTimer = 0f;
+            spawnRetryTimer = 0f;
+        }
+        else
+        {
+            spawnRetryTimer = Mathf.Max(0.1f, failedSpawnRetryDelay);
+        }
     }
 
     private void TrySpawnEnemy()
@@ -413,7 +437,7 @@ public class SpawnDirector : MonoBehaviour
         enemyRoot.SetActive(false);
     }
 
-    public void UpdatePlayerState(float normalizedHealth,float normalizedAmmo,bool alive,bool active)
+    public void UpdatePlayerState(float normalizedHealth, float normalizedAmmo, bool alive, bool active)
     {
         health01 = Mathf.Clamp01(normalizedHealth);
         ammo01 = Mathf.Clamp01(normalizedAmmo);
