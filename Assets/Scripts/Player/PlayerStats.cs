@@ -18,6 +18,10 @@ public class PlayerStats : MonoBehaviour, IDamageable
     public float meleeRange = 2.5f;
     public float meleeCooldown = 0.6f;
 
+    [Header("Hit detection")]
+    [Tooltip("Layers that shots and melee swings can hit. Untick Debris, Throwable and Player.")]
+    public LayerMask hitMask = ~0;
+
     public float HealthFraction => Mathf.Clamp01(health / maxHealth);   // 0 to 1, what BossBrain expects
     public bool IsDead => health <= 0f;
 
@@ -60,8 +64,8 @@ public class PlayerStats : MonoBehaviour, IDamageable
     {
         RaycastHit hit;
         bool didHit = radius > 0f
-            ? Physics.SphereCast(cam.position, radius, cam.forward, out hit, range, ~0, QueryTriggerInteraction.Ignore)
-            : Physics.Raycast(cam.position, cam.forward, out hit, range, ~0, QueryTriggerInteraction.Ignore);
+            ? Physics.SphereCast(cam.position, radius, cam.forward, out hit, range, hitMask, QueryTriggerInteraction.Ignore)
+            : Physics.Raycast(cam.position, cam.forward, out hit, range, hitMask, QueryTriggerInteraction.Ignore);
 
         if (!didHit) return;
         if (hit.collider.transform.IsChildOf(transform)) return;   // never hit ourselves

@@ -13,6 +13,8 @@ public class Barricade : MonoBehaviour, IDamageable
     public float debrisSize = 0.35f;
     public float debrisLifetime = 5f;
     public Color damagedColor = new Color(0.35f, 0.1f, 0.1f);
+    [Tooltip("Optional layer name for debris (create it in Project Settings > Tags and Layers).")]
+    public string debrisLayer = "Debris";
 
     float health;
     bool broken;
@@ -20,6 +22,7 @@ public class Barricade : MonoBehaviour, IDamageable
     Renderer rend;
     NavMeshObstacle obstacle;
     Color baseColor;
+    int debrisLayerIndex = -1;
 
     void Start()
     {
@@ -27,6 +30,7 @@ public class Barricade : MonoBehaviour, IDamageable
         col = GetComponent<Collider>();
         rend = GetComponent<Renderer>();
         obstacle = GetComponent<NavMeshObstacle>();
+        debrisLayerIndex = LayerMask.NameToLayer(debrisLayer);   // -1 if the layer does not exist
 
         obstacle.shape = NavMeshObstacleShape.Box;
         obstacle.center = Vector3.zero;
@@ -59,11 +63,12 @@ public class Barricade : MonoBehaviour, IDamageable
                 Random.Range(b.min.z, b.max.z));
             piece.transform.localScale = Vector3.one * debrisSize;
             piece.transform.rotation = Random.rotation;
+            if (debrisLayerIndex >= 0) piece.layer = debrisLayerIndex;
             if (rend != null) piece.GetComponent<Renderer>().sharedMaterial = rend.sharedMaterial;
 
             var rb = piece.AddComponent<Rigidbody>();
             rb.AddExplosionForce(250f, b.center, 4f);
-            Destroy(piece, debrisLifetime);
+            Destroy(piece, debrisLifetime);       // debris is removed after a few seconds to keep physics cheap
         }
 
         obstacle.enabled = false;
