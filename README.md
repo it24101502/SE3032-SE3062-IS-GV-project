@@ -2,12 +2,15 @@
 
 Interactive 3D Shooting Game — joint project for **SE3032 (Graphics & Visualization)** and **SE3062 (Intelligent Systems)**. One codebase, one Git repo, two rubrics.
 
-## Branch owner
-**De Silva D S P S N** — IT24102190
+## Team Members & Roles
 
-## Role
+### De Silva D S P S N — IT24102190
 - **GV (World Builder):** Level layout, lighting, texturing, NavMesh baking.
 - **IS (Trap Setter):** Places mines/traps strategically, learning player movement patterns.
+
+### Premarathna P A I B — IT24101844
+- **GV (Agent Controller):** Turns path arrays into smooth movement/animation.
+- **IS (Spawn Director):** Controls enemy spawns dynamically to balance difficulty.
 
 ## Architecture (IS)
 *TBD — sketch in progress (Week 1).*
@@ -16,7 +19,7 @@ Interactive 3D Shooting Game — joint project for **SE3032 (Graphics & Visualiz
 - [x] Repo cloned, branch created
 - [ ] AI architecture sketch (paper)
 - [ ] Grey-box level blockout, no textures yet (Week 2)
-- [ ] Minimal Trap Setter logic in test scene (Week 2)
+- [ ] Minimal Trap Setter & Spawn Director logic in test scene (Week 2)
 
 ## Deadlines
 - IS: agent code + report + viva — **17 Oct 2026**
@@ -24,7 +27,5 @@ Interactive 3D Shooting Game — joint project for **SE3032 (Graphics & Visualiz
 
 ## Commit convention
 Tag commits by module for clarity:
-```
-[GV] ...   → level design / lighting / NavMesh work
-[IS] ...   → Trap Setter agent work
-```
+- `[GV]` → level design / lighting / NavMesh / movement / animation work
+- `[IS]` → Trap Setter / Spawn Director agent work
