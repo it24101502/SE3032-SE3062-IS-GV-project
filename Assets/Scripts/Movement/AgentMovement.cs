@@ -12,6 +12,12 @@ public class AgentMovement : MonoBehaviour
     public bool movementEnabled = true;
     public bool loopPath = false;
 
+    [Tooltip("Ignore target height on a flat floor. Disable for paths with elevation.")]
+    public bool planarMovement = false;
+    [Min(0f)] public float animationDamping = 0.1f;
+
+    public event System.Action PathCompleted;
+
     [SerializeField] private Animator agentAnimator;
 
     private int currentPoint;
@@ -43,7 +49,21 @@ public class AgentMovement : MonoBehaviour
             : 0f;
 
         if (agentAnimator != null)
-            agentAnimator.SetFloat(SpeedParameter, actualSpeed);
+        {
+            if (actualSpeed <= 0.001f)
+            {
+                agentAnimator.SetFloat(SpeedParameter, 0f);
+            }
+            else
+            {
+                agentAnimator.SetFloat(
+                    SpeedParameter,
+                    actualSpeed,
+                    Mathf.Max(0f, animationDamping),
+                    Time.deltaTime
+                );
+            }
+        }
     }
 
     private bool TryGetTarget(out Vector3 targetPosition)
@@ -56,15 +76,20 @@ public class AgentMovement : MonoBehaviour
         if (usePositionPath)
         {
             targetPosition = positionPath[currentPoint];
-            return true;
+        }
+        else
+        {
+            Transform target = pathPoints[currentPoint];
+
+            if (target == null)
+                return false;
+
+            targetPosition = target.position;
         }
 
-        Transform target = pathPoints[currentPoint];
+        if (planarMovement)
+            targetPosition.y = transform.position.y;
 
-        if (target == null)
-            return false;
-
-        targetPosition = target.position;
         return true;
     }
 
@@ -84,9 +109,14 @@ public class AgentMovement : MonoBehaviour
             if (currentPoint >= PathLength)
             {
                 if (loopPath)
+                {
                     currentPoint = 0;
+                }
                 else
+                {
+                    PathCompleted?.Invoke();
                     return;
+                }
             }
 
             if (!TryGetTarget(out targetPosition))
@@ -203,6 +233,59 @@ public class AgentMovement : MonoBehaviour
             "[AgentMovement] Applied world-space position array.",
             this
         );
+    }
+
+    private int completionTestCount;
+
+    [ContextMenu("Tests/Start Completion Event Test")]
+    private void StartCompletionEventTest()
+    {
+        if (!Application.isPlaying)
+        {
+            Debug.LogWarning("Run this test in Play mode.", this);
+            return;
+        }
+
+        if (!isAlive || !movementEnabled)
+        {
+            Debug.LogWarning(
+                "Enable Is Alive and Movement Enabled first.", this
+            );
+            return;
+        }
+
+        completionTestCount = 0;
+
+        PathCompleted -= RecordTestCompletion;
+        PathCompleted += RecordTestCompletion;
+
+        loopPath = false;
+        ApplyPositionArrayTestPath();
+    }
+
+    private void RecordTestCompletion()
+    {
+        completionTestCount++;
+
+        Debug.Log(
+            $"[Completion Test] Event count: {completionTestCount}",
+            this
+        );
+    }
+
+    [ContextMenu("Tests/Check Completion Event Count")]
+    private void CheckCompletionEventCount()
+    {
+        if (!Application.isPlaying)
+            return;
+
+        if (completionTestCount == 1)
+            Debug.Log("[Completion Test] PASS: event fired once.", this);
+        else
+            Debug.LogError(
+                $"[Completion Test] Expected 1; got {completionTestCount}.",
+                this
+            );
     }
 #endif
 }
