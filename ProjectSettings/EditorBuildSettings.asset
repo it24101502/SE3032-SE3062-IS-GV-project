@@ -5,8 +5,13 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Bunker/Scenes/AbandonedBunker.unity
     guid: d1200de5434a0bfeaf210f616b673570
+  - enabled: 1
+    path: Assets/Scenes/MainScenes/MainLevel.unity
+    guid: c332a6f0f9b873c44bd78049eb29cf84
+  - enabled: 1
+    path: Assets/Scenes/BossTest.unity
+    guid: d4a0c96ad966b9a45a6895633491e267
   m_configObjects: {}
-  m_UseUCBPForAssetBundles: 0

@@ -12,9 +12,9 @@ TagManager:
   - Water
   - UI
   - SpawnObstacle
-  - 
-  - 
-  - 
+  - Throwable
+  - Player
+  - Debris
   - 
   - 
   - 
