@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// NEW FILE. Put it on the Boss next to BossController.
+// Put it on the Boss next to BossController.
 // It fills in the scene references automatically, so the Boss prefab can be dropped
 // into any scene (for example the integrated level) without re-assigning anything.
 // BossController and BossBrain are not modified.
@@ -20,18 +20,34 @@ public class BossAutoWire : MonoBehaviour
         if (boss.player == null && boss.playerStats != null) boss.player = boss.playerStats.transform;
         if (boss.bossHealthComp == null) boss.bossHealthComp = GetComponent<BossHealth>();
 
-        if (boss.coverPoints == null || boss.coverPoints.Length == 0)
+        // FIX: the prefab has 4 EMPTY slots, so "Length == 0" was never true.
+        // Now we also treat "all slots empty" as "nothing assigned".
+        if (!HasAnyCoverPoint(boss.coverPoints))
         {
             var list = new List<Transform>();
             GameObject parent = GameObject.Find(coverParentName);
             if (parent != null)
+            {
                 foreach (Transform t in parent.transform) list.Add(t);
+                if (list.Count == 0)
+                    Debug.LogWarning("[BossAutoWire] '" + coverParentName + "' has no child objects. The boss will have no cover points.");
+            }
             else
+            {
                 Debug.LogWarning("[BossAutoWire] No object called '" + coverParentName + "' found. The boss will have no cover points.");
+            }
             boss.coverPoints = list.ToArray();
         }
 
         if (boss.player == null || boss.playerStats == null)
             Debug.LogWarning("[BossAutoWire] No PlayerStats found in the scene. The boss cannot see the player.");
+    }
+
+    static bool HasAnyCoverPoint(Transform[] points)
+    {
+        if (points == null) return false;
+        foreach (Transform t in points)
+            if (t != null) return true;
+        return false;
     }
 }
