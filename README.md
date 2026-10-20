@@ -35,7 +35,7 @@ Open with **Unity 6000.6.4f1** (URP). Main scene: `Assets/Scenes/MainScenes/Main
 - [x] Repo, `develop` branch, URP project setup
 - [x] Boss, Spawn Director, player physics (doors, barricades, rocks)
 - [x] Bunker level geometry
-- [ ] NavMesh baked on MainLevel
+- [x] NavMesh baked on MainLevel
 - [ ] Trap Setter
 - [ ] Stealth Enemy
 - [ ] Custom Blender models imported
