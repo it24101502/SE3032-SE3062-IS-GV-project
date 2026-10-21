@@ -10,20 +10,30 @@ public class BunkerTrap : MonoBehaviour
     public bool IsArmed { get { return Time.time >= PlacedAt + armingTime; } }
     public bool IsPrimed { get { return burstAt > 0; } }
     public BunkerTrapType Kind { get; private set; }
+    
     private TrapSetterAgent owner;
     private Transform target;
-    private BunkerPlayerHealth health;
+    private PlayerStats playerStats;
+    private PlayerMovement playerMovement;
     private Renderer indicator;
     private MaterialPropertyBlock properties;
-    private float armingTime, burstAt;
+    private float armingTime, burstAt, damage;
     private bool spent;
 
     public void Initialize(TrapSetterAgent agent, BunkerAI.VisitMemory cell, Transform player,
-        BunkerPlayerHealth receiver, Renderer lamp, float delay, BunkerTrapType kind)
+        PlayerStats stats, PlayerMovement movement, Renderer lamp, float delay, BunkerTrapType kind, float trapDamage)
     {
-        owner = agent; Memory = cell; target = player; health = receiver;
-        indicator = lamp; armingTime = Mathf.Max(1, delay); PlacedAt = Time.time;
-        Kind = kind; properties = new MaterialPropertyBlock();
+        owner = agent; 
+        Memory = cell; 
+        target = player; 
+        playerStats = stats; 
+        playerMovement = movement;
+        indicator = lamp; 
+        armingTime = Mathf.Max(1, delay); 
+        PlacedAt = Time.time;
+        Kind = kind; 
+        damage = trapDamage;
+        properties = new MaterialPropertyBlock();
     }
 
     private bool Within(float radius)
@@ -63,10 +73,23 @@ public class BunkerTrap : MonoBehaviour
     {
         spent = true;
         owner.Consumed(this);
-        if (health != null && inRange)
+        if (inRange)
         {
-            if (Kind == BunkerTrapType.Shock) health.ApplySlow();
-            else health.ApplyDamage(Kind == BunkerTrapType.Burst ? owner.damage * 1.6f : owner.damage);
+            if (Kind == BunkerTrapType.Shock)
+            {
+                if (playerMovement != null)
+                {
+                    playerMovement.ApplySlow(4f);
+                }
+            }
+            else
+            {
+                if (playerStats != null)
+                {
+                    float finalDamage = Kind == BunkerTrapType.Burst ? damage * 1.6f : damage;
+                    playerStats.TakeDamage(finalDamage);
+                }
+            }
         }
         if (!inRange) Debug.Log("Burst pad avoided: no damage.");
         Destroy(gameObject);

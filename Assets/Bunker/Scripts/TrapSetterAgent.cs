@@ -19,7 +19,8 @@ public class TrapSetterAgent : MonoBehaviour
 
     private readonly PathMemory memory = new PathMemory();
     private readonly List<BunkerTrap> traps = new List<BunkerTrap>();
-    private BunkerPlayerHealth health;
+    private PlayerStats playerStats;
+    private PlayerMovement playerMovement;
     private Vector3 spawn;
     private Material baseMaterial, lampMaterial;
     private float nextSample, nextDecision, nextAction;
@@ -32,13 +33,26 @@ public class TrapSetterAgent : MonoBehaviour
     {
         if (player == null)
         {
-            BunkerWalker walker = FindAnyObjectByType<BunkerWalker>();
-            if (walker != null) player = walker.transform;
+            PlayerMovement pm = FindAnyObjectByType<PlayerMovement>();
+            if (pm != null) player = pm.transform;
+            else
+            {
+                PlayerStats ps = FindAnyObjectByType<PlayerStats>();
+                if (ps != null) player = ps.transform;
+            }
         }
         if (player == null) { Debug.LogWarning("Trap setter needs a player Transform."); enabled = false; return; }
-        health = player.GetComponent<BunkerPlayerHealth>();
-        if (health == null) health = player.gameObject.AddComponent<BunkerPlayerHealth>();
-        health.Respawned += ResetLearning;
+        
+        playerStats = player.GetComponent<PlayerStats>();
+        if (playerStats == null) 
+        { 
+            Debug.LogWarning("Trap setter needs a player with PlayerStats."); 
+            enabled = false; 
+            return; 
+        }
+        
+        playerMovement = player.GetComponent<PlayerMovement>();
+        
         spawn = player.position;
         baseMaterial = new Material(Shader.Find("Universal Render Pipeline/Lit")); baseMaterial.color = new Color(.18f, .23f, .19f);
         lampMaterial = new Material(Shader.Find("Universal Render Pipeline/Lit")); lampMaterial.EnableKeyword("_EMISSION");
@@ -49,7 +63,7 @@ public class TrapSetterAgent : MonoBehaviour
     {
         if (player == null) return;
         if (Input.GetKeyDown(KeyCode.F3)) showDebug = !showDebug;
-        if (showDebug && Input.GetKeyDown(KeyCode.R)) { health.ResetRound(); return; }
+        if (showDebug && Input.GetKeyDown(KeyCode.R)) { ResetLearning(); return; }
         if (Time.time >= nextSample)
         {
             memory.Observe(player.position.x, player.position.z, Time.time);
@@ -139,7 +153,7 @@ public class TrapSetterAgent : MonoBehaviour
         Collider lampCollider = lamp.GetComponent<Collider>(); lampCollider.enabled = false; Destroy(lampCollider);
         Renderer indicator = lamp.GetComponent<Renderer>(); indicator.sharedMaterial = lampMaterial;
         BunkerTrap trap = root.AddComponent<BunkerTrap>();
-        trap.Initialize(this, cell, player, health, indicator, armingDelay, kind);
+        trap.Initialize(this, cell, player, playerStats, playerMovement, indicator, armingDelay, kind, damage);
         traps.Add(trap);
     }
 
@@ -163,7 +177,7 @@ public class TrapSetterAgent : MonoBehaviour
         if (!showDebug || player == null) return;
         GUILayout.BeginArea(new Rect(16, 16, 520, 285), GUI.skin.box);
         GUILayout.Label("TRAP SETTER / Utility AI / F3 hides this panel");
-        GUILayout.Label("Health: " + (health != null ? health.Health.ToString("F0") : "n/a") + " | R resets this demo round");
+        GUILayout.Label("Health: " + (playerStats != null ? playerStats.health.ToString("F0") : "n/a") + " | R resets this demo round");
         GUILayout.Label("Observed cells: " + memory.Cells.Count + " | Active traps: " + traps.Count + "/" + capacity);
         GUILayout.Label("Placements: " + placementCount + " | Relocations: " + relocationCount + " | Activations: " + hitCount);
         GUILayout.Label("Candidate: " + candidate + " | Score: " + lastScore.Total.ToString("F2"));
@@ -173,13 +187,12 @@ public class TrapSetterAgent : MonoBehaviour
         GUILayout.Label("Amber = arming | Red = pressure | Cyan = shock | Purple = burst");
         GUILayout.Label("White flash = burst countdown: move away! Next type: " + (BunkerTrapType)(placementCount % 3));
         GUILayout.Label("Pressure: " + damage + " damage | Burst: " + damage * 1.6f + " damage | Shock: 4s slow");
-        GUILayout.Label("Player movement: " + (health != null && health.IsSlowed ? "SLOWED" : "normal"));
+        GUILayout.Label("Player movement: " + (playerMovement != null && playerMovement.IsSlowed ? "SLOWED" : "normal"));
         GUILayout.EndArea();
     }
 
     void OnDestroy()
     {
-        if (health != null) health.Respawned -= ResetLearning;
         if (baseMaterial != null) Destroy(baseMaterial);
         if (lampMaterial != null) Destroy(lampMaterial);
     }
