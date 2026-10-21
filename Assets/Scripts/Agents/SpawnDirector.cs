@@ -119,6 +119,9 @@ public class SpawnDirector : MonoBehaviour
     public Transform player;
     public Camera playerCamera;
     public bool rejectVisiblePoints = true;
+    [Tooltip("Use floor-level markers while placing the enemy root above the NavMesh.")]
+    public bool alignSpawnRootToNavMesh = false;
+    [Min(0f)] public float spawnRootHeight = 1.05f;
     [Min(0f)] public float minimumPlayerDistance = 3f;
     [Min(0.1f)] public float preferredPlayerDistance = 6f;
 
@@ -245,6 +248,7 @@ public class SpawnDirector : MonoBehaviour
             return;
 
         Transform bestPoint = null;
+        Vector3 bestPosition = Vector3.zero;
         float bestScore = float.NegativeInfinity;
 
         foreach (Transform point in spawnPoints)
@@ -252,10 +256,18 @@ public class SpawnDirector : MonoBehaviour
             if (point == null)
                 continue;
 
-            if (IsSpawnBlocked(point.position))
+            Vector3 spawnPosition = point.position;
+            if (alignSpawnRootToNavMesh)
+            {
+                if (!TryGetGroundPoint(point.position, out Vector3 ground))
+                    continue;
+                spawnPosition = ground + Vector3.up * spawnRootHeight;
+            }
+
+            if (IsSpawnBlocked(spawnPosition))
                 continue;
 
-            Vector3 playerOffset = point.position - player.position;
+            Vector3 playerOffset = spawnPosition - player.position;
             playerOffset.y = 0f;
 
             float playerDistance = playerOffset.magnitude;
@@ -263,9 +275,9 @@ public class SpawnDirector : MonoBehaviour
             if (playerDistance < minimumPlayerDistance)
                 continue;
 
-            if (rejectVisiblePoints && IsPointInCameraView(point.position))
+            if (rejectVisiblePoints && IsPointInCameraView(spawnPosition))
                 continue;
-            if (!TryGetPathDistance(point.position, out float pathDistance))
+            if (!TryGetPathDistance(spawnPosition, out float pathDistance))
                 continue;
 
             bool occupied = false;
@@ -277,7 +289,7 @@ public class SpawnDirector : MonoBehaviour
                     continue;
 
                 Vector3 enemyOffset =
-                    point.position - enemy.transform.position;
+                    spawnPosition - enemy.transform.position;
                 enemyOffset.y = 0f;
 
                 float distance = enemyOffset.magnitude;
@@ -321,6 +333,7 @@ public class SpawnDirector : MonoBehaviour
             {
                 bestScore = score;
                 bestPoint = point;
+                bestPosition = spawnPosition;
             }
         }
 
@@ -329,7 +342,7 @@ public class SpawnDirector : MonoBehaviour
 
         GameObject newEnemy = Instantiate(
             chosenPrefab,
-            bestPoint.position,
+            bestPosition,
             bestPoint.rotation
         );
 
@@ -337,6 +350,11 @@ public class SpawnDirector : MonoBehaviour
         newEnemy.name = selectedEnemyType + "(Clone)";
         spawnedEnemies.Add(newEnemy);
         activeEnemyCount = spawnedEnemies.Count;
+
+        if (newEnemy.TryGetComponent<EnemyHealth>(out var health))
+            health.Initialize(this);
+        if (newEnemy.TryGetComponent<AgentNavMeshChase>(out var chase))
+            chase.Initialize(player, this);
 
         Debug.Log(
             $"[SpawnDirector] Selected {bestPoint.name}, " +
