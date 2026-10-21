@@ -195,22 +195,35 @@ public class TrapSetterAgent : MonoBehaviour
         decision = "Wait: learning the player's route"; candidate = "none"; lastScore = new UtilityBreakdown();
     }
 
+    GUIStyle panelStyle;
+
     void OnGUI()
     {
         if (!showDebug || player == null) return;
-        GUILayout.BeginArea(new Rect(16, 16, 520, 285), GUI.skin.box);
-        GUILayout.Label("TRAP SETTER / Utility AI / F3 hides this panel");
-        GUILayout.Label("Health: " + (playerStats != null ? playerStats.health.ToString("F0") : "n/a") + " | R resets this demo round");
-        GUILayout.Label("Observed cells: " + memory.Cells.Count + " | Active traps: " + traps.Count + "/" + capacity);
-        GUILayout.Label("Placements: " + placementCount + " | Relocations: " + relocationCount + " | Activations: " + hitCount);
-        GUILayout.Label("Candidate: " + candidate + " | Score: " + lastScore.Total.ToString("F2"));
-        GUILayout.Label("Heat " + lastScore.Heat.ToString("F2") + " x .65 + Recency " + lastScore.Recency.ToString("F2")
+        if (panelStyle == null)
+        {
+            panelStyle = new GUIStyle(GUI.skin.label) { fontSize = 16, wordWrap = true };
+            panelStyle.normal.textColor = Color.white;
+        }
+        const float x = 10f, y = 310f, w = 700f, h = 290f;   // sits below the boss overlay
+        GUI.color = new Color(0f, 0f, 0f, 0.85f);
+        GUI.DrawTexture(new Rect(x, y, w, h), Texture2D.whiteTexture);
+        GUI.color = Color.white;
+
+        GUILayout.BeginArea(new Rect(x + 10, y + 6, w - 20, h - 12));
+        void L(string s) { GUILayout.Label(s, panelStyle); }
+        L("TRAP SETTER / Utility AI / F3 hides this panel");
+        L("Health: " + (playerStats != null ? playerStats.health.ToString("F0") : "n/a") + " | R resets this demo round");
+        L("Observed cells: " + memory.Cells.Count + " | Active traps: " + traps.Count + "/" + capacity);
+        L("Placements: " + placementCount + " | Relocations: " + relocationCount + " | Activations: " + hitCount);
+        L("Candidate: " + candidate + " | Score: " + lastScore.Total.ToString("F2"));
+        L("Heat " + lastScore.Heat.ToString("F2") + " x .65 + Recency " + lastScore.Recency.ToString("F2")
             + " x .25 + Proximity " + lastScore.Proximity.ToString("F2") + " x .10");
-        GUILayout.Label(decision);
-        GUILayout.Label("Amber = arming | Red = pressure | Cyan = shock | Purple = burst");
-        GUILayout.Label("White flash = burst countdown: move away! Next type: " + (BunkerTrapType)(placementCount % 3));
-        GUILayout.Label("Pressure: " + damage + " damage | Burst: " + damage * 1.6f + " damage | Shock: 4s slow");
-        GUILayout.Label("Player movement: " + (playerMovement != null && playerMovement.IsSlowed ? "SLOWED" : "normal"));
+        L(decision);
+        L("Amber = arming | Red = pressure | Cyan = shock | Purple = burst");
+        L("White flash = burst countdown: move away! Next type: " + (BunkerTrapType)(placementCount % 3));
+        L("Pressure: " + damage + " damage | Burst: " + damage * 1.6f + " damage | Shock: 4s slow");
+        L("Player movement: " + (playerMovement != null && playerMovement.IsSlowed ? "SLOWED" : "normal"));
         GUILayout.EndArea();
     }
 

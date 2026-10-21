@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 7764951553404219897}
   - component: {fileID: 7189592353643045774}
   - component: {fileID: 3480188343724943957}
+  - component: {fileID: 6877147510692190344}
   m_Layer: 0
   m_Name: StealthEnemy
   m_TagString: Untagged
@@ -35,7 +36,9 @@ Transform:
   m_LocalPosition: {x: -13.54285, y: 3.54, z: 17.85715}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 2335566610507597486}
+  - {fileID: 341044879719516764}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &2566846257865625871
@@ -53,7 +56,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6038530200416903788}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -235,3 +238,121 @@ MonoBehaviour:
   showOverlay: 1
   tintRendererByState: 1
   logToCsv: 1
+--- !u!114 &6877147510692190344
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6038530200416903788}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c982824c0d4d34c24a9cb34d400df156, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StealthDroneVisuals
+  controller: {fileID: 0}
+  eyeRenderer: {fileID: 0}
+  eyeMaterialIndex: 0
+  eyeLight: {fileID: 0}
+  visualRoot: {fileID: 0}
+  minIntensity: 1.5
+  maxIntensity: 6
+  colourBlendSpeed: 6
+  bobHeight: 0.08
+  bobSpeed: 2.2
+  maxTilt: 12
+  tiltSmoothing: 5
+  deadDrop: 0.7
+--- !u!1 &7290879624780349029
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2335566610507597486}
+  m_Layer: 0
+  m_Name: Visual
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2335566610507597486
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7290879624780349029}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3689219024697242110}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &229995840731131319
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 3689219024697242110}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: e56cd9a04bd7141709947fbcbbb5f687, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.017999649
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e56cd9a04bd7141709947fbcbbb5f687, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.44280005
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e56cd9a04bd7141709947fbcbbb5f687, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.49967957
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e56cd9a04bd7141709947fbcbbb5f687, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e56cd9a04bd7141709947fbcbbb5f687, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e56cd9a04bd7141709947fbcbbb5f687, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e56cd9a04bd7141709947fbcbbb5f687, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e56cd9a04bd7141709947fbcbbb5f687, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e56cd9a04bd7141709947fbcbbb5f687, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e56cd9a04bd7141709947fbcbbb5f687, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: e56cd9a04bd7141709947fbcbbb5f687, type: 3}
+      propertyPath: m_Name
+      value: SM_StalkerDrone
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e56cd9a04bd7141709947fbcbbb5f687, type: 3}
+--- !u!4 &341044879719516764 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: e56cd9a04bd7141709947fbcbbb5f687, type: 3}
+  m_PrefabInstance: {fileID: 229995840731131319}
+  m_PrefabAsset: {fileID: 0}
