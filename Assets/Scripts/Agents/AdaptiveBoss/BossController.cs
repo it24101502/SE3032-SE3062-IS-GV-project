@@ -36,6 +36,8 @@ public class BossController : MonoBehaviour{
     public int overlayFontSize = 24;
     GUIStyle overlayStyle;
 
+    bool showOverlay = true;   // F4 hides/shows the boss overlay
+
     BossBrain brain = new BossBrain();
     Renderer rend;
     NavMeshAgent agent;
@@ -82,6 +84,8 @@ public class BossController : MonoBehaviour{
     void Update(){
         elapsed = Time.timeSinceLevelLoad;
         if (Input.GetKeyDown(KeyCode.F9)) SaveLog();
+
+        if (Input.GetKeyDown(KeyCode.F4)) showOverlay = !showOverlay;
 
         // ---- End states ----
         if (bossHealthComp.IsDead){ Finish("BOSS_DEAD", Color.gray); return; }
@@ -364,6 +368,8 @@ public class BossController : MonoBehaviour{
 
     // Debug overlay: shows all four live scores
     void OnGUI(){
+        if (!showOverlay) return;
+
         if (overlayStyle == null)
         {
             overlayStyle = new GUIStyle(GUI.skin.label);
@@ -373,7 +379,7 @@ public class BossController : MonoBehaviour{
         overlayStyle.fontSize = overlayFontSize;
 
         float lineH = overlayFontSize * 1.4f;
-        float boxW = overlayFontSize * 12f;
+        float boxW = overlayFontSize * 16f;
         float boxH = lineH * 8f + 20f;
 
         GUI.color = new Color(0f, 0f, 0f, 0.7f);
