@@ -1,0 +1,5 @@
+time,event,weapon,playerHP,bossHP,distance,attack,retreat,flank,cover,coverAvail
+0.00,->Flank,Ranged,100.00,100.00,46.00,0.40,0.00,0.45,0.14,0
+60.65,PLAYER_SWITCH->Melee,Melee,100.00,30.00,6.17,0.40,0.55,0.44,0.21,0
+60.65,->Retreat,Melee,100.00,30.00,6.17,0.40,0.55,0.21,0.09,0
+66.25,BOSS_DEAD,Melee,100.00,0.00,0.00,0.34,0.71,0.17,0.10,0

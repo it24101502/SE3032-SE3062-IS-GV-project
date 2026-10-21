@@ -1,0 +1,2 @@
+time,event,weapon,playerHP,bossHP,distance,attack,retreat,flank,cover,coverAvail
+0.00,->TakeCover,Ranged,100.00,100.00,46.00,0.40,0.00,0.45,0.54,1

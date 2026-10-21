@@ -28,20 +28,22 @@ Open with **Unity 6000.6.4f1** (URP). Main scene: `Assets/Scenes/MainScenes/Main
 |---|---|---|---|
 | Adaptive Boss | Suwasthikka | Utility AI | `Assets/Scripts/Agents/AdaptiveBoss` |
 | Spawn Director | Premarathna | Phase machine + scoring | `Assets/Scripts/Agents/SpawnDirector.cs` |
-| Trap Setter | De Silva | TBD | TBD |
-| Stealth Enemy | Peiris | TBD | TBD |
+| Trap Setter | De Silva | Utility AI (trap scoring) | `Assets/Bunker/Scripts/` |
+| Stealth Enemy | Peiris | Finite State Machine + sound/vision perception | `Assets/Scripts/Agents/StealthEnemy/`|
 
-## Status
-- [x] Repo, `develop` branch, URP project setup
-- [x] Boss, Spawn Director, player physics (doors, barricades, rocks)
-- [x] Bunker level geometry
-- [x] NavMesh baked on MainLevel
-- [ ] Trap Setter
-- [ ] Stealth Enemy
-- [ ] Custom Blender models imported
-- [ ] Agent animation / movement on NavMesh
-- [ ] IS report, viva prep
-- [ ] 3-minute demo video
+### Play-test telemetry
+Each run writes two CSV files:
+ 
+| File | Contents |
+|---|---|
+| `boss_sessions.csv` | One row per session: result, duration, final boss/player HP, action switches, seconds in each action, player weapon switches, stuck recoveries |
+| `boss_log_<timestamp>.csv` | One row per boss decision: time, action, weapon, player HP, boss HP, distance, the four utility scores, cover availability |
+ 
+Summary of the 36 logged sessions (19–21 Oct 2026): 22 boss defeats, 2 player defeats,
+12 early quits; 0 stuck recoveries. After the final tuning (21 Oct, 15:00 onward) the boss
+switches tactics about 8 times per minute and spreads its time over Attack (25%),
+Retreat (24%) and Take Cover (45%), compared with 75% Take Cover in the morning and 89%
+Flank on 19 Oct.
 
 ## Deadlines
 - IS: agent code + report + viva – **21 Oct 2026** (extended by the professor)
