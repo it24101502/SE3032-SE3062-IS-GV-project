@@ -119,6 +119,9 @@ public class SpawnDirector : MonoBehaviour
     public Transform player;
     public Camera playerCamera;
     public bool rejectVisiblePoints = true;
+    [Tooltip("Use floor-level markers while placing the enemy root above the NavMesh.")]
+    public bool alignSpawnRootToNavMesh = false;
+    [Min(0f)] public float spawnRootHeight = 1.05f;
     [Min(0f)] public float minimumPlayerDistance = 3f;
     [Min(0.1f)] public float preferredPlayerDistance = 6f;
 
@@ -131,6 +134,10 @@ public class SpawnDirector : MonoBehaviour
     public LayerMask spawnBlockingLayers;
     [Min(0.01f)] public float spawnRadius = 0.5f;
     [Min(0.02f)] public float spawnHeight = 2f;
+    [Header("Failed Spawn Retry")]
+    [Min(0.1f)] public float failedSpawnRetryDelay = 0.5f;
+    private float spawnRetryTimer;
+
     [Header("Spawn Runtime Status")]
     [SerializeField] private int activeEnemyCount;
     [SerializeField] private float spawnTimer;
@@ -192,21 +199,39 @@ public class SpawnDirector : MonoBehaviour
             return;
         }
 
-        if (enemyPrefab == null ||
-            spawnPoints == null ||
-            spawnPoints.Length == 0)
+        if (spawnPoints == null || spawnPoints.Length == 0)
         {
             spawnTimer = 0f;
             return;
         }
 
-        spawnTimer += Time.deltaTime;
+        spawnTimer = Mathf.Min(
+            spawnTimer + Time.deltaTime,
+            currentSpawnInterval
+        );
 
         if (spawnTimer < currentSpawnInterval)
             return;
 
-        spawnTimer = 0f;
+        spawnRetryTimer = Mathf.Max(
+            0f, spawnRetryTimer - Time.deltaTime
+        );
+
+        if (spawnRetryTimer > 0f)
+            return;
+
+        int countBeforeAttempt = spawnedEnemies.Count;
         TrySpawnEnemy();
+
+        if (spawnedEnemies.Count > countBeforeAttempt)
+        {
+            spawnTimer = 0f;
+            spawnRetryTimer = 0f;
+        }
+        else
+        {
+            spawnRetryTimer = Mathf.Max(0.1f, failedSpawnRetryDelay);
+        }
     }
 
     private void TrySpawnEnemy()
@@ -223,6 +248,7 @@ public class SpawnDirector : MonoBehaviour
             return;
 
         Transform bestPoint = null;
+        Vector3 bestPosition = Vector3.zero;
         float bestScore = float.NegativeInfinity;
 
         foreach (Transform point in spawnPoints)
@@ -230,10 +256,18 @@ public class SpawnDirector : MonoBehaviour
             if (point == null)
                 continue;
 
-            if (IsSpawnBlocked(point.position))
+            Vector3 spawnPosition = point.position;
+            if (alignSpawnRootToNavMesh)
+            {
+                if (!TryGetGroundPoint(point.position, out Vector3 ground))
+                    continue;
+                spawnPosition = ground + Vector3.up * spawnRootHeight;
+            }
+
+            if (IsSpawnBlocked(spawnPosition))
                 continue;
 
-            Vector3 playerOffset = point.position - player.position;
+            Vector3 playerOffset = spawnPosition - player.position;
             playerOffset.y = 0f;
 
             float playerDistance = playerOffset.magnitude;
@@ -241,9 +275,9 @@ public class SpawnDirector : MonoBehaviour
             if (playerDistance < minimumPlayerDistance)
                 continue;
 
-            if (rejectVisiblePoints && IsPointInCameraView(point.position))
+            if (rejectVisiblePoints && IsPointInCameraView(spawnPosition))
                 continue;
-            if (!TryGetPathDistance(point.position, out float pathDistance))
+            if (!TryGetPathDistance(spawnPosition, out float pathDistance))
                 continue;
 
             bool occupied = false;
@@ -255,7 +289,7 @@ public class SpawnDirector : MonoBehaviour
                     continue;
 
                 Vector3 enemyOffset =
-                    point.position - enemy.transform.position;
+                    spawnPosition - enemy.transform.position;
                 enemyOffset.y = 0f;
 
                 float distance = enemyOffset.magnitude;
@@ -299,6 +333,7 @@ public class SpawnDirector : MonoBehaviour
             {
                 bestScore = score;
                 bestPoint = point;
+                bestPosition = spawnPosition;
             }
         }
 
@@ -307,7 +342,7 @@ public class SpawnDirector : MonoBehaviour
 
         GameObject newEnemy = Instantiate(
             chosenPrefab,
-            bestPoint.position,
+            bestPosition,
             bestPoint.rotation
         );
 
@@ -315,6 +350,11 @@ public class SpawnDirector : MonoBehaviour
         newEnemy.name = selectedEnemyType + "(Clone)";
         spawnedEnemies.Add(newEnemy);
         activeEnemyCount = spawnedEnemies.Count;
+
+        if (newEnemy.TryGetComponent<EnemyHealth>(out var health))
+            health.Initialize(this);
+        if (newEnemy.TryGetComponent<AgentNavMeshChase>(out var chase))
+            chase.Initialize(player, this);
 
         Debug.Log(
             $"[SpawnDirector] Selected {bestPoint.name}, " +
@@ -402,7 +442,20 @@ public class SpawnDirector : MonoBehaviour
         return true;
     }
 
-    public void UpdatePlayerState(float normalizedHealth,float normalizedAmmo,bool alive,bool active)
+    public void NotifyEnemyDeath(GameObject enemyRoot)
+    {
+        if (enemyRoot == null)
+            return;
+
+        // Only remove enemies owned by this director.
+        if (!spawnedEnemies.Remove(enemyRoot))
+            return;
+
+        activeEnemyCount = spawnedEnemies.Count;
+        enemyRoot.SetActive(false);
+    }
+
+    public void UpdatePlayerState(float normalizedHealth, float normalizedAmmo, bool alive, bool active)
     {
         health01 = Mathf.Clamp01(normalizedHealth);
         ammo01 = Mathf.Clamp01(normalizedAmmo);
@@ -476,4 +529,75 @@ public class SpawnDirector : MonoBehaviour
             this
         );
     }
+
+#if UNITY_EDITOR
+    [ContextMenu("Tests/Check Enemy Death Notification")]
+    private void TestEnemyDeathNotification()
+    {
+        if (!Application.isPlaying)
+        {
+            Debug.LogWarning("Run this test during Play mode.", this);
+            return;
+        }
+
+        GameObject ownedEnemy = spawnedEnemies.Find(
+            enemy => enemy != null && enemy.activeInHierarchy
+        );
+
+        if (ownedEnemy == null)
+        {
+            Debug.LogWarning("Wait for an enemy to spawn first.", this);
+            return;
+        }
+
+        int before = spawnedEnemies.Count;
+
+        NotifyEnemyDeath(null);
+        bool nullIgnored =
+            spawnedEnemies.Count == before &&
+            activeEnemyCount == before;
+
+        GameObject outsider = new GameObject("UntrackedDeathTest");
+        NotifyEnemyDeath(outsider);
+
+        bool outsiderIgnored =
+            outsider.activeSelf &&
+            spawnedEnemies.Count == before &&
+            activeEnemyCount == before;
+
+        Destroy(outsider);
+
+        NotifyEnemyDeath(ownedEnemy);
+
+        bool ownedRemoved =
+            !ownedEnemy.activeSelf &&
+            !spawnedEnemies.Contains(ownedEnemy) &&
+            spawnedEnemies.Count == before - 1 &&
+            activeEnemyCount == before - 1;
+
+        NotifyEnemyDeath(ownedEnemy);
+
+        bool duplicateIgnored =
+            spawnedEnemies.Count == before - 1 &&
+            activeEnemyCount == before - 1;
+
+        string results =
+            $"Null ignored: {nullIgnored}, " +
+            $"Untracked ignored: {outsiderIgnored}, " +
+            $"Owned removed: {ownedRemoved}, " +
+            $"Duplicate ignored: {duplicateIgnored}";
+
+        if (nullIgnored && outsiderIgnored &&
+            ownedRemoved && duplicateIgnored)
+        {
+            Debug.Log("[SpawnDirector Death Tests] PASS — " + results, this);
+        }
+        else
+        {
+            Debug.LogError(
+                "[SpawnDirector Death Tests] FAIL — " + results, this
+            );
+        }
+    }
+#endif
 }
