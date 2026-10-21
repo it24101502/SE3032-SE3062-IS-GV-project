@@ -55,7 +55,7 @@ spacing = 1 if no owned enemies, otherwise Clamp01(nearestEnemyDistance / prefer
 score = 0.7*pathFit + 0.3*spacing
 ```
 
-The highest score wins, with the first candidate winning a tie. Path length measures navigable travel rather than straight-line distance. The larger weight prioritizes distance fit; spacing reduces concentration. These weights also need balance testing. MainLevel supplies four existing SpawnCandidate markers, bounding candidate path calculations per attempt. A short failed-attempt delay and periodic chase replanning avoid recalculating every candidate every rendered frame.
+The highest score wins, with the first candidate winning a tie. Path length measures navigable travel rather than straight-line distance. The larger weight prioritizes distance fit; spacing reduces concentration. These weights also need balance testing. The four original SpawnCandidate markers returned partial paths to the player. MainLevel therefore uses four alternative validated points in the player's reachable NavMesh region. The original markers were retained. All four alternatives passed complete-path and spawn-clearance checks. Runtime candidate path calculations are bounded by these four configured points. A short failed-attempt delay and periodic chase replanning avoid recalculating every candidate every rendered frame.
 
 ## Integration and ownership
 
@@ -65,7 +65,25 @@ The bridge calls UpdatePlayerState before director updates. SpawnDirector initia
 
 The earlier standalone tests were developer-reported: cap, gameplay/player death gates, stress relaxation/recovery, blocked/unblocked candidates, profile selection, missing/invalid configuration and death-notification edge cases. They are recorded in SpawnDirector-Integration.md and do not establish that real gameplay integration works.
 
-**Integrated test results: pending execution.** Use SpawnDirector-MainLevel-Integration.md to record real health/resource changes, actual player damage to enemies, count reduction/replacement, navigation around corners, victory/death gates and Console errors. Add screenshots or observations and the final commit hash after testing. Do not replace this paragraph with a pass claim before those checks run.
+### Integrated manual test results
+
+The following results were observed during MainLevel Play mode testing:
+
+| Test | Result |
+|---|---|
+| Real health input | Player health 50/100 produced director Health01 = 0.5. |
+| Real throwable resource input | Four remaining rocks out of five produced Ammo01 = 0.8. |
+| Spawn population | Three active enemies were observed with the configured cap of three. |
+| Navigation setup | Four alternative spawn points passed complete-route and clearance checks. |
+| Chase movement | Spawned enemies moved toward the player using NavMesh paths. |
+| Enemy damage and death | Shooting removed enemies and reduced the tracked count. |
+| Replacement spawning | New enemies appeared after deaths during the same Play session. |
+| Player death display | Setting player health to zero displayed YOU DIED. |
+| Console | Zero red Console errors were observed in the supplied integration screenshots. |
+
+Still requiring explicit confirmation: no replacement spawning after player death, boss-victory gating, integrated Heavy-profile behaviour, and movement around representative bunker corners. Screenshots of player death alone do not prove that replacement spawning remains disabled.
+
+Integration code and documentation were pushed to feature/agent-controller-premarathna at commit 1f0056f. These are manual functional observations, not automated coverage or performance measurements.
 
 ## Limitations
 
