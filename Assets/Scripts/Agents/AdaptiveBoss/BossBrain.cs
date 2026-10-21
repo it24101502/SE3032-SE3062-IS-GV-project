@@ -37,6 +37,9 @@ public class BossBrain{
         LastScores[(int)BossAction.Flank]     = (0.5f * rangedThreat + 0.5f * mediumBand) * courage;
         LastScores[(int)BossAction.TakeCover] = (0.6f * rangedThreat + 0.4f * bossHurt) * coverGate;
 
+        if (hasChosen && Current == BossAction.TakeCover)
+            LastScores[(int)BossAction.TakeCover] -= Mathf.Min(0.5f, 0.02f * Mathf.Max(0f, timeInCurrent - 10f));
+        
         // ---------- Find the best-scoring action ----------
         int best = 0;
         for (int i = 1; i < 4; i++)

@@ -1,0 +1,20 @@
+{
+  "checks": "PASS",
+  "scene_objects": 1056,
+  "colliders": 352,
+  "materials": 12,
+  "prefabs": 4,
+  "validated_asset_files": 17,
+  "checks_completed": [
+    "YAML syntax",
+    "unique asset GUIDs",
+    "all internal component references",
+    "all asset references",
+    "one camera, audio listener and character controller",
+    "corridor passage clearance",
+    "barracks passage clearance",
+    "storage doorway clearance with door open",
+    "closed storage door blocks passage"
+  ],
+  "not_verified": "Unity Editor import and Play mode: automated Editor launch blocked by licensing IPC in the sandbox."
+}

@@ -15,6 +15,11 @@ public class PlayerMovement : MonoBehaviour
     float pitch;
     float verticalVelocity;
 
+    private float slowUntil;
+    public float slowFactor = 0.5f;
+    public bool IsSlowed => Time.time < slowUntil;
+    public void ApplySlow(float seconds) { slowUntil = Time.time + seconds; }
+
     void Start()
     {
         cc = GetComponent<CharacterController>();
@@ -32,11 +37,13 @@ public class PlayerMovement : MonoBehaviour
         pitch = Mathf.Clamp(pitch - Input.GetAxis("Mouse Y") * mouseSensitivity, -80f, 80f);
         cameraTransform.localEulerAngles = new Vector3(pitch, 0f, 0f);
 
-        // Move with WASD (+ Shift to sprint)
+        // Move with WASD (+ Shift to sprint, and apply temporary slow factor if active)
         Vector3 move = transform.right * Input.GetAxis("Horizontal")
                      + transform.forward * Input.GetAxis("Vertical");
         if (move.sqrMagnitude > 1f) move.Normalize();
+        
         float currentSpeed = speed * (Input.GetKey(KeyCode.LeftShift) ? sprintMultiplier : 1f);
+        if (IsSlowed) currentSpeed *= slowFactor;
 
         // Gravity + jump
         if (cc.isGrounded && verticalVelocity < 0f) verticalVelocity = -2f;
