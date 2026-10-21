@@ -79919,6 +79919,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f52795fcf1877f64aacb1e8a04ccaa66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
+--- !u!20 &773539587 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 2130226454033315829, guid: d04ad009d10b0a4448493b3a955765dc, type: 3}
+  m_PrefabInstance: {fileID: 773539584}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &773614214
 GameObject:
   m_ObjectHideFlags: 0
@@ -84569,6 +84574,123 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 871014755}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &872571193
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 872571196}
+  - component: {fileID: 872571195}
+  - component: {fileID: 872571194}
+  m_Layer: 0
+  m_Name: SpawnDirector
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &872571194
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 872571193}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a82c16d303ae53709ba4967730e5d48d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpawnDirectorPlayerBridge
+  playerStats: {fileID: 773539586}
+  playerThrower: {fileID: 773539585}
+  gameFlow: {fileID: 1590889280}
+  rockAmmoCapacity: 5
+  gameplayActive: 1
+--- !u!114 &872571195
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 872571193}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 714404bcc42eb984a94c1d06c2a052ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpawnDirector
+  enemyTypes:
+  - typeName: Light
+    prefab: {fileID: 8329573728820095059, guid: 9e0577cad1a2a504985e01717c64ab4d, type: 3}
+    preferredPressure: 0.3
+    peakOnly: 0
+  - typeName: Heavy
+    prefab: {fileID: 6999253079744825404, guid: 6a2ab2badac33184d8b3980413079c80, type: 3}
+    preferredPressure: 0.8
+    peakOnly: 1
+  targetPressure: 0
+  selectedEnemyType: 
+  gameplayActive: 1
+  playerAlive: 1
+  health01: 1
+  ammo01: 1
+  nearbyEnemies: 0
+  enemyCountForMaxStress: 5
+  automaticEnemyCount: 1
+  nearbyEnemyRadius: 10
+  smoothingSpeed: 2
+  highStressThreshold: 0.75
+  recoveryThreshold: 0.35
+  buildUpDuration: 20
+  peakDuration: 10
+  minimumRelaxDuration: 8
+  targetStress: 0
+  smoothedStress: 0
+  phaseTimer: 0
+  currentPhase: 0
+  enemyPrefab: {fileID: 8329573728820095059, guid: 9e0577cad1a2a504985e01717c64ab4d, type: 3}
+  spawnPoints:
+  - {fileID: 548839029}
+  - {fileID: 1029606513}
+  - {fileID: 844773529}
+  - {fileID: 1581460388}
+  player: {fileID: 1050283448}
+  playerCamera: {fileID: 773539587}
+  rejectVisiblePoints: 1
+  alignSpawnRootToNavMesh: 1
+  spawnRootHeight: 1.05
+  minimumPlayerDistance: 3
+  preferredPlayerDistance: 6
+  maxActiveEnemies: 3
+  buildUpSpawnInterval: 4
+  peakSpawnInterval: 2
+  minimumEnemySpacing: 1.5
+  spawnBlockingLayers:
+    serializedVersion: 2
+    m_Bits: 65
+  spawnRadius: 0.5
+  spawnHeight: 2
+  failedSpawnRetryDelay: 0.5
+  activeEnemyCount: 0
+  spawnTimer: 0
+  currentSpawnInterval: 0
+--- !u!4 &872571196
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 872571193}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &876567216
 GameObject:
   m_ObjectHideFlags: 0
@@ -108262,6 +108384,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3a67da4809b719043a66174a8138a68c, type: 3}
+--- !u!114 &1590889280 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6642723191715145998, guid: 3a67da4809b719043a66174a8138a68c, type: 3}
+  m_PrefabInstance: {fileID: 1590889279}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c859cf3dda8397b449d0dbf72cd1e1ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameFlow
 --- !u!1 &1591299021
 GameObject:
   m_ObjectHideFlags: 0
@@ -122678,3 +122811,4 @@ SceneRoots:
   - {fileID: 1369278855}
   - {fileID: 791288716}
   - {fileID: 260774212}
+  - {fileID: 872571196}

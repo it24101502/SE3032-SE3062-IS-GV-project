@@ -588,6 +588,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2695012516546463186, guid: b120f4b187e8ac247bc71ce947544e83, type: 3}
+      propertyPath: planarMovement
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2695012516546463186, guid: b120f4b187e8ac247bc71ce947544e83, type: 3}
       propertyPath: 'pathPoints.Array.data[0]'
       value: 
       objectReference: {fileID: 1729008138}
