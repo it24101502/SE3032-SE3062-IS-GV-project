@@ -1,0 +1,4 @@
+time,event,weapon,playerHP,bossHP,distance,attack,retreat,flank,cover,coverAvail
+0.00,->Flank,Ranged,100.00,100.00,46.00,0.40,0.00,0.45,0.14,0
+28.89,->Attack,Ranged,100.00,100.00,2.85,0.74,0.26,0.59,0.14,0
+39.31,PLAYER_DEAD,Ranged,0.00,20.00,0.00,0.66,0.73,0.26,0.22,0

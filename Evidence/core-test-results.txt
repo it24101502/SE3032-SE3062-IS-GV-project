@@ -1,0 +1,21 @@
+PASS: standing still is one entry, not 100 visits
+PASS: one visit is insufficient
+PASS: a real return visit unlocks a candidate
+PASS: heat halves in 45 seconds
+PASS: repeat route earns a sufficient normalized score
+PASS: old routes lose utility
+PASS: consumed site respects cooldown
+PASS: place when budget is available
+PASS: wait during action cooldown
+PASS: wait below score threshold
+PASS: hysteresis prevents needless relocation
+PASS: relocate when a site is substantially better
+PASS: no eligible old trap means wait
+PASS: zero capacity is safe
+PASS: boundary jitter is debounced
+PASS: negative bunker coordinates map correctly
+PASS: round reset clears learning
+PASS: memory is bounded and evicts old cells
+PASS: a repeated route outranks a single pass
+PASS: ancient repeated routes no longer qualify
+ALL 20 CORE CHECKS PASSED
