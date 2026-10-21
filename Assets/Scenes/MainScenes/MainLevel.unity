@@ -54345,7 +54345,7 @@ Light:
   m_InnerSpotAngle: 28
   m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
-    m_Type: 2
+    m_Type: 0
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 0.7
@@ -54652,7 +54652,7 @@ Light:
   m_InnerSpotAngle: 28
   m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
-    m_Type: 2
+    m_Type: 0
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 0.7
@@ -54960,7 +54960,7 @@ Light:
   m_InnerSpotAngle: 28
   m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
-    m_Type: 2
+    m_Type: 0
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 0.7
@@ -55280,7 +55280,7 @@ Light:
   m_InnerSpotAngle: 28
   m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
-    m_Type: 2
+    m_Type: 0
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 0.7
@@ -55587,7 +55587,7 @@ Light:
   m_InnerSpotAngle: 28
   m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
-    m_Type: 2
+    m_Type: 0
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 0.7
@@ -55894,7 +55894,7 @@ Light:
   m_InnerSpotAngle: 28
   m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
-    m_Type: 2
+    m_Type: 0
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 0.7
@@ -56201,7 +56201,7 @@ Light:
   m_InnerSpotAngle: 28
   m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
-    m_Type: 2
+    m_Type: 0
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 0.7
@@ -56328,7 +56328,7 @@ Light:
   m_InnerSpotAngle: 28
   m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
-    m_Type: 0
+    m_Type: 2
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 0.7
@@ -56455,7 +56455,7 @@ Light:
   m_InnerSpotAngle: 28
   m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
-    m_Type: 0
+    m_Type: 2
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 0.7
@@ -64698,6 +64698,59 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 252901963}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &260774210
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 260774212}
+  - component: {fileID: 260774211}
+  m_Layer: 0
+  m_Name: TrapSetterManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &260774211
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 260774210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc5ee2930b9e02a95715e813218e623b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TrapSetterAgent
+  player: {fileID: 1050283448}
+  capacity: 3
+  decisionInterval: 1
+  placementCooldown: 8
+  safePlayerDistance: 4
+  minimumTrapSpacing: 3
+  armingDelay: 2.5
+  damage: 25
+  showDebug: 0
+--- !u!4 &260774212
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 260774210}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.97, y: 0, z: 3.28333}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &266113896
 GameObject:
   m_ObjectHideFlags: 0
@@ -94110,7 +94163,7 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
   m_Shadows:
-    m_Type: 2
+    m_Type: 0
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 0.65
@@ -100930,7 +100983,7 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
   m_Shadows:
-    m_Type: 2
+    m_Type: 0
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 0.65
@@ -114970,7 +115023,7 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
   m_Shadows:
-    m_Type: 2
+    m_Type: 0
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 0.65
@@ -115187,7 +115240,7 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
   m_Shadows:
-    m_Type: 2
+    m_Type: 0
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 0.65
@@ -116820,6 +116873,30 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7764131948881585634, guid: e14bb5ae4af15314e81128d087144696, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 1050283448}
+    - target: {fileID: 7764131948881585634, guid: e14bb5ae4af15314e81128d087144696, type: 3}
+      propertyPath: playerStats
+      value: 
+      objectReference: {fileID: 773539586}
+    - target: {fileID: 7764131948881585634, guid: e14bb5ae4af15314e81128d087144696, type: 3}
+      propertyPath: 'coverPoints.Array.data[0]'
+      value: 
+      objectReference: {fileID: 831257474}
+    - target: {fileID: 7764131948881585634, guid: e14bb5ae4af15314e81128d087144696, type: 3}
+      propertyPath: 'coverPoints.Array.data[1]'
+      value: 
+      objectReference: {fileID: 1317164954}
+    - target: {fileID: 7764131948881585634, guid: e14bb5ae4af15314e81128d087144696, type: 3}
+      propertyPath: 'coverPoints.Array.data[2]'
+      value: 
+      objectReference: {fileID: 2009429831}
+    - target: {fileID: 7764131948881585634, guid: e14bb5ae4af15314e81128d087144696, type: 3}
+      propertyPath: 'coverPoints.Array.data[3]'
+      value: 
+      objectReference: {fileID: 893290528}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -122600,3 +122677,4 @@ SceneRoots:
   - {fileID: 681656864}
   - {fileID: 1369278855}
   - {fileID: 791288716}
+  - {fileID: 260774212}
