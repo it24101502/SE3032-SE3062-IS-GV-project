@@ -139,19 +139,42 @@ public class TrapSetterAgent : MonoBehaviour
     {
         // Utility chooses position/timing; types cycle for a predictable demo.
         BunkerTrapType kind = (BunkerTrapType)(placementCount % 3);
+        // The visible disc matches the trigger radius: what you see is what hurts.
+        float radius = kind == BunkerTrapType.Burst ? 0.9f : 0.65f;
+
         GameObject root = new GameObject("Adaptive " + kind + " pad");
-        root.transform.SetParent(transform); root.transform.position = site;
+        root.transform.SetParent(transform);
+        root.transform.position = site;
+
         GameObject disc = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-        disc.name = "Pressure pad base"; disc.transform.SetParent(root.transform, false);
-        disc.transform.localPosition = Vector3.up * .045f; disc.transform.localScale = new Vector3(.7f, .045f, .7f);
+        disc.name = "Pressure pad base";
+        disc.transform.SetParent(root.transform, false);
+        disc.transform.localPosition = Vector3.up * .03f;
+        disc.transform.localScale = new Vector3(radius * 2f, .03f, radius * 2f);
         // Purely visual; the player cannot get stuck on a pad.
         Collider discCollider = disc.GetComponent<Collider>(); discCollider.enabled = false; Destroy(discCollider);
         disc.GetComponent<Renderer>().sharedMaterial = baseMaterial;
+
         GameObject lamp = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-        lamp.name = kind + " indicator"; lamp.transform.SetParent(root.transform, false);
-        lamp.transform.localPosition = Vector3.up * .10f; lamp.transform.localScale = new Vector3(.22f, .015f, .22f);
+        lamp.name = kind + " indicator";
+        lamp.transform.SetParent(root.transform, false);
+        lamp.transform.localPosition = Vector3.up * .075f;
+        lamp.transform.localScale = new Vector3(radius * 1.7f, .02f, radius * 1.7f);
         Collider lampCollider = lamp.GetComponent<Collider>(); lampCollider.enabled = false; Destroy(lampCollider);
-        Renderer indicator = lamp.GetComponent<Renderer>(); indicator.sharedMaterial = lampMaterial;
+        Renderer indicator = lamp.GetComponent<Renderer>();
+        indicator.sharedMaterial = lampMaterial;
+
+        // Glow light so the pad is visible in the dark bunker (colour is driven by BunkerTrap).
+        GameObject glowObject = new GameObject("Pad glow");
+        glowObject.transform.SetParent(root.transform, false);
+        glowObject.transform.localPosition = Vector3.up * .8f;
+        Light glow = glowObject.AddComponent<Light>();
+        glow.type = LightType.Point;
+        glow.range = 7f;
+        glow.intensity = 3f;
+        glow.shadows = LightShadows.None;
+        glow.color = new Color(1f, .65f, .05f);
+
         BunkerTrap trap = root.AddComponent<BunkerTrap>();
         trap.Initialize(this, cell, player, playerStats, playerMovement, indicator, armingDelay, kind, damage);
         traps.Add(trap);

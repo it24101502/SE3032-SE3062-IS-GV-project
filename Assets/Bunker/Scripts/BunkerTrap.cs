@@ -10,12 +10,13 @@ public class BunkerTrap : MonoBehaviour
     public bool IsArmed { get { return Time.time >= PlacedAt + armingTime; } }
     public bool IsPrimed { get { return burstAt > 0; } }
     public BunkerTrapType Kind { get; private set; }
-    
+
     private TrapSetterAgent owner;
     private Transform target;
     private PlayerStats playerStats;
     private PlayerMovement playerMovement;
     private Renderer indicator;
+    private Light glow;
     private MaterialPropertyBlock properties;
     private float armingTime, burstAt, damage;
     private bool spent;
@@ -23,15 +24,16 @@ public class BunkerTrap : MonoBehaviour
     public void Initialize(TrapSetterAgent agent, BunkerAI.VisitMemory cell, Transform player,
         PlayerStats stats, PlayerMovement movement, Renderer lamp, float delay, BunkerTrapType kind, float trapDamage)
     {
-        owner = agent; 
-        Memory = cell; 
-        target = player; 
-        playerStats = stats; 
+        owner = agent;
+        Memory = cell;
+        target = player;
+        playerStats = stats;
         playerMovement = movement;
-        indicator = lamp; 
-        armingTime = Mathf.Max(1, delay); 
+        indicator = lamp;
+        glow = GetComponentInChildren<Light>();
+        armingTime = Mathf.Max(1, delay);
         PlacedAt = Time.time;
-        Kind = kind; 
+        Kind = kind;
         damage = trapDamage;
         properties = new MaterialPropertyBlock();
     }
@@ -51,10 +53,19 @@ public class BunkerTrap : MonoBehaviour
         Color armed = Kind == BunkerTrapType.Shock ? Color.cyan :
             Kind == BunkerTrapType.Burst ? new Color(.85f, .15f, 1) : new Color(1, .15f, .08f);
         Color color = !IsArmed ? new Color(1, .65f, .05f) : IsPrimed ? Color.white : armed;
+        float pulse = Mathf.Sin(Time.time * 30);
+
         properties.SetColor("_Color", color);
         properties.SetColor("_BaseColor", color);
-        properties.SetColor("_EmissionColor", color * (IsPrimed ? 1.5f + Mathf.Sin(Time.time * 30) : .8f));
+        properties.SetColor("_EmissionColor", color * (IsPrimed ? 3f + 1.5f * pulse : 2.2f));
         indicator.SetPropertyBlock(properties);
+
+        if (glow != null)
+        {
+            glow.color = color;
+            glow.intensity = IsPrimed ? 4f + 2f * pulse : 3f;
+        }
+
         if (IsPrimed)
         {
             if (Time.time >= burstAt) Finish(Within(1.4f));
@@ -77,10 +88,7 @@ public class BunkerTrap : MonoBehaviour
         {
             if (Kind == BunkerTrapType.Shock)
             {
-                if (playerMovement != null)
-                {
-                    playerMovement.ApplySlow(4f);
-                }
+                if (playerMovement != null) playerMovement.ApplySlow(4f);
             }
             else
             {

@@ -1,0 +1,237 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6038530200416903788
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3689219024697242110}
+  - component: {fileID: 2566846257865625871}
+  - component: {fileID: 5179768465674521658}
+  - component: {fileID: 1054603261147634598}
+  - component: {fileID: 4739923545371160135}
+  - component: {fileID: 7764951553404219897}
+  - component: {fileID: 7189592353643045774}
+  - component: {fileID: 3480188343724943957}
+  m_Layer: 0
+  m_Name: StealthEnemy
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3689219024697242110
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6038530200416903788}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -13.54285, y: 3.54, z: 17.85715}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &2566846257865625871
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6038530200416903788}
+  m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &5179768465674521658
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6038530200416903788}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!136 &1054603261147634598
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6038530200416903788}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!195 &4739923545371160135
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6038530200416903788}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 1
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
+--- !u!114 &7764951553404219897
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6038530200416903788}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87544c23d99d044e180a4e100b0ecf50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StealthPerception
+  viewDistance: 18
+  viewAngle: 110
+  eyeHeight: 0.8
+  sightGainPerSecond: 1.2
+  closeSenseRange: 1.5
+  hearingRange: 35
+  referenceDistance: 6
+  wallMuffle: 0.3
+  minAudible: 0.04
+  hearingGain: 1
+  maskRadius: 4
+  maskFactor: 0.4
+  decayPerSecond: 0.06
+  decayDelay: 2
+  playerViewAngle: 70
+  playerEyeHeight: 0.6
+  occluders:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!114 &7189592353643045774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6038530200416903788}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6c14ac3addd648c1a54c32cb3a44d4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StealthHealth
+  maxHealth: 60
+  health: 60
+--- !u!114 &3480188343724943957
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6038530200416903788}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88ac6b40e4f6743bea821de6e4571367, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StealthEnemyController
+  tuning:
+    investigateThreshold: 0.25
+    huntThreshold: 0.7
+    loseThreshold: 0.45
+    calmThreshold: 0.1
+    attackRange: 1.8
+    ambushRange: 5
+    creepRange: 8
+    searchRadius: 6
+    minStateTime: 0.4
+    lookAroundTime: 3
+    patrolPause: 1.5
+    maxHideTime: 6
+    hideCooldown: 6
+    unseenBeforeAmbush: 1
+    maxSearchTime: 20
+    searchPoints: 4
+  patrolPoints: []
+  wanderRadius: 12
+  useBunkerMarkers: 1
+  markerZone: Acoustic
+  markerSearchRadius: 40
+  walkSpeed: 1.6
+  cautiousSpeed: 2.2
+  runSpeed: 4
+  sprintSpeed: 5.5
+  attackDamage: 12
+  sneakAttackMultiplier: 2
+  attackCooldown: 1.2
+  hideSearchRadius: 10
+  hideSamples: 16
+  minHideDistanceFromPlayer: 4
+  stuckCheckInterval: 1
+  stuckMoveThreshold: 0.15
+  destroyDelay: 4
+  showOverlay: 1
+  tintRendererByState: 1
+  logToCsv: 1

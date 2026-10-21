@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 6970385750013940282}
   - component: {fileID: 2059809553995103045}
   - component: {fileID: 8941623831387561349}
+  - component: {fileID: 975443441201947465}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -181,6 +182,28 @@ MonoBehaviour:
   cooldown: 0.4
   key: 113
   throwableLayer: Throwable
+--- !u!114 &975443441201947465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 749154552291663035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c14aa511ed668431aa3d6193d2d56a69, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerNoiseEmitter
+  stepDistance: 1.8
+  sneakLoudness: 0.05
+  walkLoudness: 0.35
+  sprintLoudness: 0.9
+  sprintSpeedThreshold: 6.5
+  sneakKey: 306
+  sneakSlowsPlayer: 1
+  sneakSpeedMultiplier: 0.45
+  gunshotLoudness: 3
+  meleeLoudness: 0.5
 --- !u!1 &5362926980071859447
 GameObject:
   m_ObjectHideFlags: 0
